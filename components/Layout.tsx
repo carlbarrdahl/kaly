@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { DefaultSeo, NextSeo } from "next-seo";
+
 import {
   Box,
   Flex,
@@ -113,17 +115,44 @@ const SidebarContent = (props) => {
   );
 };
 
+const title = "kaly - Decentralized Calendar";
+const description = "Web3 decentralized calendar app.";
+const url = "https://kaly.vercel.app";
 const Layout: React.FC = ({ children }) => {
   const sidebar = useDisclosure();
 
   return (
     <Flex as="section" bg={"white"} h="100vh">
       <Head>
-        <title>kaly - Cecentralized Calendar</title>
         <meta name="description" content="Decentralized powered by Ceramic" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      <DefaultSeo
+        title={title}
+        description={description}
+        canonical={url}
+        openGraph={{
+          url,
+          title,
+          description,
+          images: [
+            {
+              url: `${url}/kaly.jpg`,
+              width: 1024,
+              height: 537,
+              alt: "Web3 Calendar",
+              type: "image/jpeg",
+            },
+          ],
+          type: "website",
+          site_name: "kaly",
+        }}
+        // twitter={{
+        //   handle: "@handle",
+        //   site: "@site",
+        //   cardType: "summary_large_image",
+        // }}
+      />
       <SidebarContent display={{ base: "none", md: "unset" }} />
       <Drawer
         isOpen={sidebar.isOpen}
