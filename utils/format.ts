@@ -1,5 +1,5 @@
 // Copied from: https://stackoverflow.com/questions/4700226/i-want-to-truncate-a-text-or-line-with-ellipsis-using-javascript
-export const truncate = (str = "", max = 20, sep = "...") => {
+export const truncate = (str = "", max = 13, sep = "...") => {
   const len = str.length;
   if (len > max) {
     const seplen = sep.length;

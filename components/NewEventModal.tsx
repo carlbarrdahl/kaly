@@ -96,7 +96,7 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
         <form
           onSubmit={handleSubmit((form) => {
             onClose(form);
-            reset();
+            // reset();
           })}
         >
           <ModalHeader> </ModalHeader>

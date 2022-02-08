@@ -12,9 +12,9 @@ async function prepareEvent(event, selfID) {
   return {
     ...event,
     organizer: selfID.id,
-    attendees: await Promise.all(
-      event.attendees.map((addr) => addressToDid(addr, selfID.client.ceramic))
-    ),
+    // attendees: await Promise.all(
+    //   event.attendees.map((addr) => addressToDid(addr, selfID.client.ceramic))
+    // ),
     start: event.start.toISOString(),
     end: event.end.toISOString(),
   };
@@ -55,6 +55,7 @@ export function useEvents() {
     ["events"],
     async ({ signal }) => {
       console.log("Loading events...");
+
       const events: string[] = await axios.get(`/api/user/${selfID.id}`, {
         signal,
       });
@@ -70,7 +71,11 @@ export function useEvents() {
 
 export function useEvent(id) {
   const { ceramic } = useCore();
-  return useQuery(["events", id], () => loadTile(ceramic, id));
+  return useQuery(["events", id], async () => {
+    const tile = await TileDocument.load(ceramic, id);
+    console.log(tile);
+    return loadTile(ceramic, id);
+  });
 }
 
 async function loadTile(ceramic, id) {

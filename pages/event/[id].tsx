@@ -1,16 +1,10 @@
 import {
   Box,
-  Heading,
   Input,
   Flex,
   Skeleton,
-  SkeletonText,
   HStack,
-  Spinner,
   Text,
-  Editable,
-  EditableInput,
-  EditablePreview,
   FormControl,
   FormLabel,
   List,
@@ -19,7 +13,6 @@ import {
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { CreatableSelect } from "chakra-react-select";
 import { DateTimeInput } from "../../components/NewEventModal";
 import { useEvent } from "../../hooks/events";
 import Avatar from "boring-avatars";
@@ -30,14 +23,6 @@ const EventPage: NextPage = () => {
   const router = useRouter();
   const { data, isLoading, error } = useEvent(router.query.id);
 
-  console.log("data", data);
-  // if (isLoading) {
-  //   return (
-  //     <Flex justifyContent="center" alignItems="center">
-  //       <Spinner />
-  //     </Flex>
-  //   );
-  // }
   return (
     <Flex flex="1 1 auto" bg="white" height="100%" flexWrap="wrap">
       <Box flex="0.5 0 300px" mr={[0, 0, 16]}>
@@ -62,9 +47,11 @@ const EventPage: NextPage = () => {
             />
           </Skeleton>
         </HStack>
-        <Skeleton isLoaded={!isLoading}>
-          <Editor content={data?.description} />
-        </Skeleton>
+        <Box mt={4}>
+          <Skeleton isLoaded={!isLoading}>
+            <Editor content={data?.description} />
+          </Skeleton>
+        </Box>
       </Box>
       <Box flex="0 0 200px">
         <FormControl mt={2}>
