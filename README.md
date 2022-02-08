@@ -2,6 +2,8 @@
 
 A decentralized calendar and scheduling app built with Ceramic.
 
+![](public/kaly.jpg)
+
 ### Features
 
 - [x] Web3 login with MetaMask (Self.ID)
