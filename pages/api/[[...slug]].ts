@@ -48,9 +48,6 @@ async function updateIndex(
   eventId: string
 ) {
   const index = await getIndex(ceramic, did, true);
-  console.log("-----");
-  console.log(index.controllers, index.id.toString());
-  console.log("-----");
   const events = selectEvents(index);
   console.log(`Index found with ${events.length} events`);
   console.log("Adding the new event streamId to the index", eventId);
