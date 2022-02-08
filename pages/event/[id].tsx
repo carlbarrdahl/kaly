@@ -70,7 +70,7 @@ const EventPage: NextPage = () => {
         <FormControl mt={2}>
           <List spacing={3}>
             <FormLabel htmlFor="attendees">
-              {data?.attendees?.length || "_"} attendees
+              {data?.attendees?.length} attendees
             </FormLabel>
             {data?.attendees?.map((attendee) => (
               <ListItem key={attendee} as={Flex} alignItems="center">
