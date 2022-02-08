@@ -71,25 +71,6 @@ const eventsSchemaID = await manager.createSchema("Events", {
   },
 });
 
-const mappingSchemaID = await manager.createSchema("AttendeeMapping", {
-  $schema: "http://json-schema.org/draft-07/schema#",
-  title: "AttendeeMapping",
-  type: "object",
-  additionalProperties: { type: "object" },
-  // properties: {
-
-  //   additionalProperties: {
-  //     type: "array",
-  //     items: {
-  //       type: "string",
-  //     },
-  //   },
-  //   // mapping: {
-  //   //   type: "object",
-  //   // },
-  // },
-});
-
 // Create the definition using the created schema ID
 await manager.createDefinition("events", {
   name: "Events",
@@ -102,21 +83,6 @@ await manager.createDefinition("attendee_mapping", {
   description: "Maps attendees to Events",
   schema: manager.getSchemaURL(mappingSchemaID),
 });
-
-// Create a Note with text that will be used as placeholder
-// await manager.createTile(
-//   "placeholder",
-//   { name: "placeholder..." },
-//   { schema: manager.getSchemaURL(itemSchemaID) }
-// );
-
-// await manager.createTile(
-//   "placeholderItemList",
-//   {
-//     items: ["kjzl6cwe1jw147skte3w0wqoyhqo99obxf2fev3m2j120l1z1sdur0o3807grbz"],
-//   },
-//   { schema: manager.getSchemaURL(itemsListSchemaID) }
-// );
 
 // Write model to JSON file
 await writeFile(
