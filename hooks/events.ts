@@ -27,7 +27,9 @@ export function useCreateEvent() {
   const queryClient = useQueryClient();
   return useMutation(async (form) => {
     console.log("Creating Tile for event", form);
+    // @ts-ignore
     const eventDoc = await core.dataModel.createTile(
+      // @ts-ignore
       "Event",
       await prepareEvent(form, selfID)
     );
