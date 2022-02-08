@@ -1,97 +1,109 @@
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import iCalendarPlugin from "@fullcalendar/icalendar";
-import listPlugin from "@fullcalendar/list";
-import interactionPlugin from "@fullcalendar/interaction";
-import timeGridPlugin from "@fullcalendar/timegrid";
+import {
+  Calendar,
+  dateFnsLocalizer,
+  Views,
+  Navigate,
+  EventWrapperProps,
+} from "react-big-calendar";
+import format from "date-fns/format";
+import parse from "date-fns/parse";
+import startOfWeek from "date-fns/startOfWeek";
+import getDay from "date-fns/getDay";
+import enUS from "date-fns/locale/en-US";
+import { Box } from "@chakra-ui/react";
+import { useMemo, useRef } from "react";
+import { useKeyPressEvent } from "react-use";
 
-import styled from "@emotion/styled";
-import { Button } from "@chakra-ui/button";
-import NewEventModal from "./NewEventModal";
-import { useRef, useState } from "react";
-import { useDisclosure } from "@chakra-ui/hooks";
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales: { "en-US": enUS },
+});
 
-export const StyleWrapper = styled.div`
-  max-height: calc(100vh - 200px);
-`;
+function useShortcuts(ref, enabled) {
+  const { handleViewChange, handleNavigate } = ref.current || {};
+  useKeyPressEvent("1", () => enabled && handleViewChange(Views.MONTH));
+  useKeyPressEvent("2", () => enabled && handleViewChange(Views.WEEK));
+  useKeyPressEvent("3", () => enabled && handleViewChange(Views.DAY));
+  useKeyPressEvent("4", () => enabled && handleViewChange(Views.AGENDA));
+  useKeyPressEvent("r", () => enabled && handleNavigate(Navigate.PREVIOUS));
+  useKeyPressEvent("t", () => enabled && handleNavigate(Navigate.TODAY));
+  useKeyPressEvent("y", () => enabled && handleNavigate(Navigate.NEXT));
+}
 
-const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+type Event = any;
+type IProps = {
+  events: Event[];
+  shortcutsEnabled: boolean;
+  onSelectEvent: (event: Event) => void;
+  onNewEvent: (event: Event) => void;
+};
+const BigCalendar: React.FC<IProps> = ({
+  events = [],
+  shortcutsEnabled,
+  onSelectEvent,
+  onNewEvent,
+}) => {
+  const ref = useRef(null);
 
-const Calendar = ({ events = [], onCreateEvent }) => {
-  const initialRef = useRef();
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  useShortcuts(ref, shortcutsEnabled);
 
-  function handleSaveEvent(event) {
-    if (event) {
-      onCreateEvent(event);
-      //   setEvents((s) => s.concat(event));
-    }
-    onClose();
-  }
-
-  function handleSelect(e) {
-    console.log("select", e);
-    setSelectedEvent(e);
-    onOpen();
-  }
-  function handleEventClick(e) {
-    console.log("event click", e);
-  }
-  function handleEventResize(e) {
-    console.log("event resize", e);
-  }
-
-  function handleEventDrop(e) {
-    console.log("drop event", e.event.toJSON());
-    // updateEvent().catch(() => e.revert())
-  }
+  // Calendar expects Date, not strings
+  const parsedEvents = useMemo(
+    () =>
+      events.map((e) => ({
+        ...e,
+        start: new Date(e.start),
+        end: new Date(e.end),
+      })),
+    [events]
+  );
 
   return (
-    <StyleWrapper>
-      <FullCalendar
-        height="100%"
-        timeZone={"UTC"}
-        plugins={[
-          dayGridPlugin,
-          timeGridPlugin,
-          interactionPlugin,
-          iCalendarPlugin,
-        ]}
-        nowIndicator
-        editable
+    <div>
+      <Calendar
+        ref={ref}
         selectable
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
+        onNavigate={(e) => console.log("nav", e)}
+        localizer={localizer}
+        events={parsedEvents}
+        components={{
+          eventWrapper: (p: any) => {
+            // console.log(p);
+            return (
+              <Box
+                p="1"
+                fontSize="sm"
+                color="white"
+                bg="blue.500"
+                cursor="pointer"
+                onClick={() => p.onSelect(p.event)}
+                // {...p}
+                _hover={{
+                  bg: "blue.600",
+                }}
+              >
+                <Box
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {p.event.title}
+                </Box>
+              </Box>
+            );
+          },
         }}
-        initialView="dayGridMonth"
-        dayMaxEvents={true}
-        height="100vh"
-        select={handleSelect}
-        eventClick={handleEventClick}
-        eventDrop={handleEventDrop}
-        eventResize={handleEventResize}
-        events={events}
-        //   events={{
-        //     url: "./ical.ics",
-        //     format: "ics",
-        //   }}
+        startAccessor="start"
+        endAccessor="end"
+        onSelectEvent={onSelectEvent}
+        onSelectSlot={onNewEvent}
+        style={{ height: "calc(100vh - 90px)" }}
       />
-      <FullCalendar
-        plugins={[listPlugin]}
-        events={events}
-        initialView="dayGridMonth"
-      />
-      <NewEventModal
-        selectedEvent={selectedEvent}
-        isOpen={isOpen}
-        onClose={handleSaveEvent}
-        initialRef={initialRef}
-      />
-    </StyleWrapper>
+    </div>
   );
 };
 
-export default Calendar;
+export default BigCalendar;

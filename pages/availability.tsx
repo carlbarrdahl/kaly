@@ -31,7 +31,7 @@ const IntervalsConfig = ({ index, control, register, onRemove }) => {
   return (
     <>
       <Box>
-        {fields.map((interval, i) => {
+        {fields.map((interval: any, i) => {
           return (
             <Box key={interval.wday} mb={2}>
               <Flex>
@@ -109,8 +109,16 @@ const defaultAvailability = {
     },
   ],
 };
+
+type IAvailability = {
+  rules: {
+    type: string;
+    intervals: { from: string; to: string }[];
+    wday: string;
+  }[];
+};
 const AvailabilityConfig = () => {
-  const { control, register, handleSubmit } = useForm({
+  const { control, register, handleSubmit } = useForm<IAvailability>({
     defaultValues: defaultAvailability,
   });
   const rules = useFieldArray({ control, name: `rules` });
@@ -175,9 +183,11 @@ const AvailabilityConfig = () => {
             </Flex>
           );
         })}
-        <Button type="form" colorScheme="blue">
-          Save
-        </Button>
+        {/* <Flex>
+          <Button disabled type="submit" colorScheme="blue">
+            Save
+          </Button>
+        </Flex> */}
       </VStack>
     </form>
   );

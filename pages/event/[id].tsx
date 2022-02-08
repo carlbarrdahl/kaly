@@ -6,7 +6,7 @@ import {
   Skeleton,
   SkeletonText,
   HStack,
-  SimpleGrid,
+  Spinner,
   Text,
   Editable,
   EditableInput,
@@ -31,39 +31,48 @@ const EventPage: NextPage = () => {
   const { data, isLoading, error } = useEvent(router.query.id);
 
   console.log("data", data);
-  if (isLoading) {
-    return "...";
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Flex justifyContent="center" alignItems="center">
+  //       <Spinner />
+  //     </Flex>
+  //   );
+  // }
   return (
     <Flex flex="1 1 auto" bg="white" height="100%" flexWrap="wrap">
       <Box flex="0.5 0 300px" mr={[0, 0, 16]}>
-        <Editable defaultValue={data.title} fontSize="2xl">
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
+        <Skeleton isLoaded={!isLoading}>
+          <Input variant="flushed" defaultValue={data?.title} fontSize="2xl" />
+        </Skeleton>
         <HStack mt={2}>
-          <DateTimeInput
-            // readOnly
-            size="xs"
-            // border="none"
-            value={new Date(data.start)}
-          />
-          <DateTimeInput
-            // readOnly
-            size="xs"
-            // border="none"
-            value={new Date(data.end)}
-          />
+          <Skeleton isLoaded={!isLoading}>
+            <DateTimeInput
+              // readOnly
+              size="sm"
+              // border="none"
+              value={data?.start && new Date(data.start)}
+            />
+          </Skeleton>
+          <Skeleton isLoaded={!isLoading}>
+            <DateTimeInput
+              // readOnly
+              size="sm"
+              // border="none"
+              value={data?.end && new Date(data.end)}
+            />
+          </Skeleton>
         </HStack>
-        <Editor content={data.description} />
+        <Skeleton isLoaded={!isLoading}>
+          <Editor content={data?.description} />
+        </Skeleton>
       </Box>
       <Box flex="0 0 200px">
         <FormControl mt={2}>
           <List spacing={3}>
             <FormLabel htmlFor="attendees">
-              {data.attendees.length} attendees
+              {data?.attendees?.length || "_"} attendees
             </FormLabel>
-            {data.attendees.map((attendee) => (
+            {data?.attendees?.map((attendee) => (
               <ListItem key={attendee} as={Flex} alignItems="center">
                 <ListIcon as={() => <Avatar name={attendee} size={24} />} />
                 <Text fontSize="sm" ml={2}>

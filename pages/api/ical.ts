@@ -25,6 +25,7 @@ const handler = nc<NextApiRequest, NextApiResponse>({
         alarms: [
           {
             action: "display",
+            // @ts-ignore
             description: "Reminder",
             trigger: { minutes: 30, before: true },
           },

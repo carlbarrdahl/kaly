@@ -8,27 +8,24 @@ import {
   ModalCloseButton,
   FormControl,
   FormLabel,
+  Flex,
+  Checkbox,
   FormHelperText,
   FormErrorMessage,
   Input,
   Textarea,
   Button,
+  ButtonGroup,
   HStack,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { CreatableSelect } from "chakra-react-select";
 import { format } from "date-fns";
-import { useCore } from "@self.id/react";
-import {
-  addressToDid,
-  isENS,
-  isEthereumAddress,
-  isSupportedDID,
-} from "../utils/address";
+import { isENS, isEthereumAddress, isSupportedDID } from "../utils/address";
 
-const formatDate = (date) =>
-  date && format(date, "yyyy-MM-dd'T'HH:mm", { awareOfUnicodeTokens: true });
+import { Event } from "../types/Event";
+
+const formatDate = (date) => date && format(date, "yyyy-MM-dd'T'HH:mm");
 
 export const DateTimeInput = ({ value, ...props }) => (
   <Input type="datetime-local" value={formatDate(value)} {...props} />
@@ -38,28 +35,33 @@ const AttendeesInput = ({ setError, ...props }) => {
   return (
     <Controller
       {...props}
-      render={({ field: { onChange, ...field } }) => (
-        <CreatableSelect
-          formatCreateLabel={(v) => `Add ${v}`}
-          isMulti
-          onChange={(e) => {
-            // Check if entered address is valid
-            const isValid = (v) => isEthereumAddress(v); // || isSupportedDID(v)  || isENS(v)
+      name="attendees"
+      render={({ field: { onChange, value, ...field } }) => {
+        return (
+          <CreatableSelect
+            placeholder="Enter any ETH address..."
+            formatCreateLabel={(v) => `Add ${v}`}
+            isMulti
+            value={value.map((value) => ({ value, label: value }))}
+            onChange={(e) => {
+              // Check if entered address is valid
+              const isValid = (v) => isEthereumAddress(v); // || isSupportedDID(v)  || isENS(v)
 
-            const error = e.map((v) => v.value).filter((v) => !isValid(v))[0];
+              const error = e.map((v) => v.value).filter((v) => !isValid(v))[0];
 
-            if (!error) {
-              onChange(e);
-            } else {
-              setError("attendees", {
-                type: "manual",
-                message: `${error} is not a valid address`,
-              });
-            }
-          }}
-          {...field}
-        />
-      )}
+              if (!error) {
+                onChange(e.map((v) => v.value));
+              } else {
+                setError("attendees", {
+                  type: "manual",
+                  message: `${error} is not a valid address`,
+                });
+              }
+            }}
+            {...field}
+          />
+        );
+      }}
     />
   );
 };
@@ -73,7 +75,7 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
     getValues,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<Event>({
     mode: "onBlur",
     reValidateMode: "onChange",
     defaultValues: {
@@ -88,71 +90,72 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={() => onClose()} size="2xl">
-      <ModalOverlay />
-      <ModalContent>
+    <Modal isOpen={isOpen} onClose={() => onClose()} size="xl">
+      {/* <ModalOverlay /> */}
+      <ModalContent shadow="dark-lg">
         <form
           onSubmit={handleSubmit((form) => {
-            form.attendees = form.attendees.map((a) => a.value);
-
             onClose(form);
             reset();
           })}
         >
-          <ModalHeader>New event</ModalHeader>
+          <ModalHeader> </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel htmlFor="title">Title</FormLabel>
+              <FormLabel mb={0} htmlFor="title">
+                Title
+              </FormLabel>
               <Input
                 autoFocus
                 id="title"
-                placeholder="Title"
+                placeholder="Scheduled event"
                 {...register("title", { required: true })}
               />
             </FormControl>
 
             <FormControl mt={2}>
-              <FormLabel htmlFor="description">Description</FormLabel>
+              <FormLabel mb={0} htmlFor="description">
+                Description
+              </FormLabel>
               <Textarea
                 id="description"
-                placeholder="Description"
+                rows={4}
+                placeholder={`# Meeting
+- Markdown is supported
+                `}
                 {...register("description", {})}
               />
             </FormControl>
-            <FormControl mt={2} isInvalid={errors.attendees}>
-              <FormLabel htmlFor="attendees">Attendees</FormLabel>
-              {errors.attendees ? (
-                <FormErrorMessage>{errors.attendees.message}</FormErrorMessage>
-              ) : (
-                <FormHelperText>
-                  Enter eth address (ENS support coming)
-                </FormHelperText>
-              )}
+            <FormControl mt={2} isInvalid={!!errors.attendees}>
+              <FormLabel mb={0} htmlFor="attendees">
+                Attendees
+              </FormLabel>
+              {
+                errors.attendees ? (
+                  <FormErrorMessage>
+                    {(errors.attendees as any).message}
+                  </FormErrorMessage>
+                ) : null
+                // <FormHelperText>
+                //   Enter eth address (ENS support coming)
+                // </FormHelperText>
+              }
 
               <AttendeesInput
-                name="attendees"
                 control={control}
-                {...(register("attendees"),
-                {
-                  validate: {
-                    did: (v) => {
-                      console.log("validate", v);
-                      return true;
-                    },
-                  },
-                })}
+                {...register("attendees")}
                 setError={setError}
               />
             </FormControl>
             <HStack mt={2}>
-              {/* <FormControl>
-                <FormLabel htmlFor="allDay">All day?</FormLabel>
-                <Checkbox id="allDay" {...register("allDay")} />
-              </FormControl> */}
               <FormControl>
-                <FormLabel htmlFor="start">Start</FormLabel>
+                <FormLabel mb={0} htmlFor="start">
+                  Start
+                </FormLabel>
                 <Input
+                  pr={0}
+                  size="sm"
                   type="datetime-local"
                   id="start"
                   value={formatDate(getValues("start"))}
@@ -160,8 +163,10 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>End</FormLabel>
+                <FormLabel mb={0}>End</FormLabel>
                 <Input
+                  pr={0}
+                  size="sm"
                   type="datetime-local"
                   id="end"
                   value={formatDate(getValues("end"))}
@@ -169,24 +174,38 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
                 />
               </FormControl>
             </HStack>
+            <Flex>
+              <FormControl>
+                <FormLabel mb={0} htmlFor="allDay">
+                  All day?
+                </FormLabel>
+                <Checkbox id="allDay" {...register("allDay")} />
+              </FormControl>
+            </Flex>
             <FormControl mt={2}>
-              <FormLabel>URL</FormLabel>
+              <FormLabel mb={0}>URL</FormLabel>
               <Input placeholder="https://" {...register("url", {})} />
             </FormControl>
           </ModalBody>
 
           <ModalFooter>
-            <Button
-              disabled={isLoading}
-              type="submit"
-              colorScheme="blue"
-              mr={3}
-            >
-              Save
-            </Button>
-            <Button disabled={isLoading} onClick={() => onClose()}>
-              Cancel
-            </Button>
+            <ButtonGroup>
+              <Button
+                variant="ghost"
+                disabled={isLoading}
+                onClick={() => onClose()}
+              >
+                Cancel
+              </Button>
+              <Button
+                px={7}
+                isLoading={isLoading}
+                type="submit"
+                colorScheme="blue"
+              >
+                Save
+              </Button>
+            </ButtonGroup>
           </ModalFooter>
         </form>
       </ModalContent>

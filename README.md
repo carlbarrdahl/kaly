@@ -48,6 +48,7 @@ Prio for deploy:
 - [x] Sign in with wallet
 - [ ] Configure availability
 - [x] Create new event
+- [x] View event
 - [x] Share link
 
 ---

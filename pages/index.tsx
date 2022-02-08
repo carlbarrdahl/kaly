@@ -4,7 +4,7 @@ import Head from "next/head";
 import { TileDocument } from "@ceramicnetwork/stream-tile";
 import { useState } from "react";
 // import Calendar from "../components/Calendar";
-import BigCalendar from "../components/BigCalendar";
+import Calendar from "../components/Calendar";
 import NewEventModal from "../components/NewEventModal";
 import EventModal from "../components/EventModal";
 import Profile from "../components/Profile";
@@ -13,6 +13,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useCreateEvent, useEvents } from "../hooks/events";
 import { Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { Event } from "../types/Event";
 
 const events = [
   {
@@ -44,11 +45,10 @@ const Home: NextPage = () => {
     });
   }
 
-  console.log("New event", newEvent);
   return (
     <Box bg="white">
-      <BigCalendar
-        events={data}
+      <Calendar
+        events={data as Event[]}
         shortcutsEnabled={!newEvent}
         onSelectEvent={(event) => {
           console.log(event);

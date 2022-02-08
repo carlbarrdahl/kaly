@@ -1,4 +1,3 @@
-import "@fontsource/ibm-plex-mono";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import type { AppProps } from "next/app";
@@ -14,10 +13,40 @@ import Layout from "../components/Layout";
 const model: ModelTypesToAliases<any> = publishedModel;
 
 const theme = extendTheme({
-  // fonts: {
-  //   heading: "IBM Plex Mono, monospace",
-  //   body: "IBM Plex Mono, monospace",
-  // },
+  colors: {
+    blue: {
+      "50": "#E5F1FF",
+      "100": "#B8D7FF",
+      "200": "#8ABDFF",
+      "300": "#5CA3FF",
+      "400": "#2E89FF",
+      "500": "#006FFF",
+      "600": "#0059CC",
+      "700": "#004399",
+      "800": "#002C66",
+      "900": "#001633",
+    },
+  },
+  borders: {
+    borderRadius: 0,
+  },
+  components: {
+    Button: {
+      defaultProps: {
+        padding: 7,
+      },
+      baseStyle: {
+        rounded: "sm",
+      },
+    },
+    FormLabel: {
+      baseStyle: {
+        // textTransform: "uppercase",
+        // fontSize: "xs",
+        // color: "gray.500",
+      },
+    },
+  },
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -26,12 +55,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <Provider
+        state={state}
         client={{
           ceramic: CERAMIC_NETWORK,
           connectNetwork: "testnet-clay",
           model,
         }}
-        state={state}
       >
         <Layout>
           <Component {...props} />

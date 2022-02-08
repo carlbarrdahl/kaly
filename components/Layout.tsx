@@ -26,11 +26,10 @@ import ConnectButton from "./ConnectButton";
 import Head from "next/head";
 import { useIsFetching } from "react-query";
 
-const NavItem = ({ icon, children, disabled, href = "#", ...rest }) => {
+const NavItem = ({ icon, children, disabled = false, href = "#", ...rest }) => {
   return (
     <Link href={href}>
       <Flex
-        href={href}
         align="center"
         px="4"
         pl="4"
@@ -120,7 +119,7 @@ const Layout: React.FC = ({ children }) => {
   return (
     <Flex as="section" bg={"white"} h="100vh">
       <Head>
-        <title>dcal - Cecentralized Calendar</title>
+        <title>kaly - Cecentralized Calendar</title>
         <meta name="description" content="Decentralized powered by Ceramic" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

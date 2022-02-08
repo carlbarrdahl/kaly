@@ -1,10 +1,11 @@
 import { TileDocument } from "@ceramicnetwork/stream-tile";
 import { useCore, useViewerConnection } from "@self.id/react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import axios from "../lib/axios";
-
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import { addressToDid } from "../utils/address";
+import { SelfID } from "@self.id/web";
+import { Event } from "../types/Event";
 
 async function prepareEvent(event, selfID) {
   console.log("Preparing event...");
@@ -21,7 +22,7 @@ async function prepareEvent(event, selfID) {
 
 export function useCreateEvent() {
   const core = useCore();
-  const [{ selfID }] = useViewerConnection();
+  const [{ selfID }]: any = useViewerConnection();
   console.log(selfID);
   const queryClient = useQueryClient();
   return useMutation(async (form) => {
@@ -33,7 +34,9 @@ export function useCreateEvent() {
 
     console.log("Optimistically updating events");
     const event = addDocId(eventDoc);
-    queryClient.setQueryData(["events"], (data = []) => data.concat(event));
+    queryClient.setQueryData(["events"], (data: Event[] = []) =>
+      data.concat(event)
+    );
 
     console.log("Updating index for all attendees and organizer...");
     await axios.post(`/api/event`, event);
@@ -45,12 +48,14 @@ export function useCreateEvent() {
 }
 
 export function useEvents() {
-  const [{ selfID }] = useViewerConnection();
+  const [{ selfID }]: any = useViewerConnection();
   return useQuery(
     ["events"],
     async ({ signal }) => {
       console.log("Loading events...");
-      const events = await axios.get(`/api/user/${selfID.id}`, { signal });
+      const events: string[] = await axios.get(`/api/user/${selfID.id}`, {
+        signal,
+      });
 
       console.log("Loaded events", events);
       return await Promise.all(

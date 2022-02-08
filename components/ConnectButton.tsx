@@ -38,7 +38,7 @@ function useConnect(autoConnect) {
       queryFn: () =>
         createAuthProvider()
           .then(connect)
-          .then((user) => localStorage.setItem("did", user?.id)),
+          .then((user) => localStorage.setItem("did", user?.id || "")),
       enabled: autoConnect,
     },
     {
@@ -79,7 +79,7 @@ const ConnectButton: React.FC = () => {
         </MenuButton>
         <MenuList>
           <MenuItem>Profile</MenuItem>
-          <MenuItem onClick={disconnect}>Sign out</MenuItem>
+          <MenuItem onClick={() => disconnect()}>Sign out</MenuItem>
         </MenuList>
       </Menu>
     </>
@@ -87,7 +87,7 @@ const ConnectButton: React.FC = () => {
     <Button
       loadingText="Connecting"
       isLoading={connection.status === "connecting"}
-      onClick={connect}
+      onClick={() => connect()}
     >
       Connect
     </Button>

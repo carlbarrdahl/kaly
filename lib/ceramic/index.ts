@@ -39,7 +39,9 @@ export async function createClient() {
   const model = new DataModel({ ceramic, model: modelAliases });
   const dataStore = new DIDDataStore({ ceramic, model });
 
+  // @ts-ignore
   ceramic.dataModel = model;
+  // @ts-ignore
   ceramic.dataStore = dataStore;
   client = ceramic;
 
