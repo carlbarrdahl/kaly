@@ -12,19 +12,34 @@ import Layout from "../components/Layout";
 
 const model: ModelTypesToAliases<any> = publishedModel;
 
+const colors = {
+  blue: {
+    "50": "#E5F1FF",
+    "100": "#B8D7FF",
+    "200": "#8ABDFF",
+    "300": "#5CA3FF",
+    "400": "#2E89FF",
+    "500": "#006FFF",
+    "600": "#0059CC",
+    "700": "#004399",
+    "800": "#002C66",
+    "900": "#001633",
+  },
+};
 const theme = extendTheme({
-  colors: {
-    blue: {
-      "50": "#E5F1FF",
-      "100": "#B8D7FF",
-      "200": "#8ABDFF",
-      "300": "#5CA3FF",
-      "400": "#2E89FF",
-      "500": "#006FFF",
-      "600": "#0059CC",
-      "700": "#004399",
-      "800": "#002C66",
-      "900": "#001633",
+  colors,
+  styles: {
+    global: {
+      ".rbc-event": {
+        bg: colors.blue["500"],
+        borderRadius: 1,
+        "&:hover": {
+          bg: colors.blue["600"],
+        },
+      },
+      ".rbc-day-slot": {
+        display: "block",
+      },
     },
   },
   borders: {

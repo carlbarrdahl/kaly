@@ -1,34 +1,16 @@
-import { useCore, useViewerRecord } from "@self.id/react";
 import type { NextPage } from "next";
-import Head from "next/head";
-import { TileDocument } from "@ceramicnetwork/stream-tile";
 import { useState } from "react";
-// import Calendar from "../components/Calendar";
+import { Box } from "@chakra-ui/react";
+
 import Calendar from "../components/Calendar";
 import NewEventModal from "../components/NewEventModal";
 import EventModal from "../components/EventModal";
-import Profile from "../components/Profile";
-import ConnectButton from "../components/ConnectButton";
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useCreateEvent, useEvents } from "../hooks/events";
-import { Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { Event } from "../types/Event";
 
-const events = [
-  {
-    title: "Yoga class",
-    attendees: ["<eth_address>"],
-    start: [2022, 1, 4, 18],
-    duration: { hours: 1 },
-  },
-  { title: "event 2", start: "2022-02-04 16:15" },
-];
-
 const Home: NextPage = () => {
-  const core = useCore();
   const router = useRouter();
-  console.log("core", core);
   const createEvent = useCreateEvent();
   const { data, isLoading, error } = useEvents();
 
@@ -46,14 +28,11 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Box bg="white">
+    <Box>
       <Calendar
         events={data as Event[]}
         shortcutsEnabled={!newEvent}
-        onSelectEvent={(event) => {
-          console.log(event);
-          router.push(`/event/${event.id}`);
-        }}
+        onSelectEvent={(event) => router.push(`/event/${event.id}`)}
         // onSelectEvent={setSelectedEvent}
         onNewEvent={setNewEvent}
       />

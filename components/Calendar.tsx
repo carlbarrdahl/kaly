@@ -1,16 +1,14 @@
 import {
-  Calendar,
+  Calendar as BigCalendar,
   dateFnsLocalizer,
   Views,
   Navigate,
-  EventWrapperProps,
 } from "react-big-calendar";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import startOfWeek from "date-fns/startOfWeek";
 import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
-import { Box } from "@chakra-ui/react";
 import { useMemo, useRef } from "react";
 import { useKeyPressEvent } from "react-use";
 
@@ -40,7 +38,7 @@ type IProps = {
   onSelectEvent: (event: Event) => void;
   onNewEvent: (event: Event) => void;
 };
-const BigCalendar: React.FC<IProps> = ({
+const Calendar: React.FC<IProps> = ({
   events = [],
   shortcutsEnabled,
   onSelectEvent,
@@ -63,39 +61,12 @@ const BigCalendar: React.FC<IProps> = ({
 
   return (
     <div>
-      <Calendar
+      <BigCalendar
         ref={ref}
         selectable
         onNavigate={(e) => console.log("nav", e)}
         localizer={localizer}
         events={parsedEvents}
-        components={{
-          eventWrapper: (p: any) => {
-            // console.log(p);
-            return (
-              <Box
-                p="1"
-                fontSize="sm"
-                color="white"
-                bg="blue.500"
-                cursor="pointer"
-                onClick={() => p.onSelect(p.event)}
-                // {...p}
-                _hover={{
-                  bg: "blue.600",
-                }}
-              >
-                <Box
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                >
-                  {p.event.title}
-                </Box>
-              </Box>
-            );
-          },
-        }}
         startAccessor="start"
         endAccessor="end"
         onSelectEvent={onSelectEvent}
@@ -106,4 +77,4 @@ const BigCalendar: React.FC<IProps> = ({
   );
 };
 
-export default BigCalendar;
+export default Calendar;
