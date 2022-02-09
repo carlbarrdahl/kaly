@@ -10,7 +10,8 @@ A decentralized calendar and scheduling app built with Ceramic.
 - [x] Calendar and events is stored in Ceramic
 - [x] Invite attendees with DID, wallet address or ENS (ENS not implemented yet)
 - [x] The invited attendees can see these events when they sign in
-- [ ] The organizer can update their created events
+- [x] The organizer can update their created events
+  - [ ] TODO: fix proper DateTimeInput
 - [ ] Configure availability
 - [ ] Events can be public, private or confidential (encrypted, only invited attendees can decrypt)
 - Public events can be shared with a link (`https://kaly.../api/event/:streamId`)

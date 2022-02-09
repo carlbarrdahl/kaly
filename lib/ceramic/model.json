@@ -1,1 +1,12 @@
-{"definitions":{"events":"kjzl6cwe1jw14956dkub0q70odj0xm529ayej6462rii4wlxx1xzcpi3cav5k6u","attendee_mapping":"kjzl6cwe1jw14620eosgfubjhf2f3be3pduu0pljoh7i1t6zdi3mwe6vl6ka0xk"},"schemas":{"Event":"ceramic://k3y52l7qbv1frxib7vycs21gjf6ij77i4lukdpe9c9wkunzaho7ezvtyrz2uod3i8","Events":"ceramic://k3y52l7qbv1frxy3voks4lucz1i2a8j7qrt66jmj88sktvficy3nggl9ahv6c6ebk","AttendeeMapping":"ceramic://k3y52l7qbv1fry75yt65joaqept0f1m35x4wkeumyowxi2khejx9sgazv9glkumm8"},"tiles":{}}
+{
+  "definitions": {
+    "events": "kjzl6cwe1jw14956dkub0q70odj0xm529ayej6462rii4wlxx1xzcpi3cav5k6u",
+    "attendee_mapping": "kjzl6cwe1jw14620eosgfubjhf2f3be3pduu0pljoh7i1t6zdi3mwe6vl6ka0xk"
+  },
+  "schemas": {
+    "Event": "ceramic://k3y52l7qbv1frxib7vycs21gjf6ij77i4lukdpe9c9wkunzaho7ezvtyrz2uod3i8",
+    "Events": "ceramic://k3y52l7qbv1frxy3voks4lucz1i2a8j7qrt66jmj88sktvficy3nggl9ahv6c6ebk",
+    "AttendeeMapping": "ceramic://k3y52l7qbv1fry75yt65joaqept0f1m35x4wkeumyowxi2khejx9sgazv9glkumm8"
+  },
+  "tiles": {}
+}

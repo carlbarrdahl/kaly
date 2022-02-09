@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { DefaultSeo, NextSeo } from "next-seo";
 
 import {
+  ButtonGroup,
   Box,
   Flex,
   useDisclosure,
@@ -19,6 +20,7 @@ import {
   Kbd,
 } from "@chakra-ui/react";
 import { BsGearFill } from "react-icons/bs";
+import { FiHelpCircle } from "react-icons/fi";
 import { GrSchedule, GrClock } from "react-icons/gr";
 import { ImCalendar, ImClock } from "react-icons/im";
 import { FiSearch } from "react-icons/fi";
@@ -27,6 +29,7 @@ import Link from "./Link";
 import ConnectButton from "./ConnectButton";
 import Head from "next/head";
 import { useIsFetching } from "react-query";
+import HelpModal from "./HelpModal";
 
 const NavItem = ({ icon, children, disabled = false, href = "#", ...rest }) => {
   return (
@@ -120,7 +123,7 @@ const description = "Web3 decentralized calendar app.";
 const url = "https://kaly.vercel.app";
 const Layout: React.FC = ({ children }) => {
   const sidebar = useDisclosure();
-
+  const [isHelpModalOpen, toggleHelpModal] = useState(false);
   return (
     <Flex as="section" bg={"white"} h="100vh">
       <Head>
@@ -197,14 +200,24 @@ const Layout: React.FC = ({ children }) => {
               <Kbd>K</Kbd>
             </InputRightElement>
           </InputGroup>
-          <Flex>
+          <ButtonGroup>
             <ConnectButton />
-          </Flex>
+            <IconButton
+              onClick={() => toggleHelpModal(!isHelpModalOpen)}
+              variant="ghost"
+              aria-label="Help button"
+              icon={<FiHelpCircle />}
+            />
+          </ButtonGroup>
         </Flex>
 
         <Box as="main" p="4">
           {children}
         </Box>
+        <HelpModal
+          isOpen={isHelpModalOpen}
+          onClose={() => toggleHelpModal(!isHelpModalOpen)}
+        />
       </Box>
     </Flex>
   );

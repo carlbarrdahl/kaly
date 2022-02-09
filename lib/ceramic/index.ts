@@ -9,7 +9,6 @@ import { DIDDataStore } from "@glazed/did-datastore";
 import modelAliases from "./model.json";
 
 import { config } from "dotenv";
-import { Core } from "@self.id/core";
 config();
 
 let client: CeramicClient;

@@ -23,13 +23,20 @@ import { CreatableSelect } from "chakra-react-select";
 import { format } from "date-fns";
 import { isENS, isEthereumAddress, isSupportedDID } from "../utils/address";
 
-import { Event } from "../types/Event";
+import { Event } from "../schemas/event";
 
 const formatDate = (date) => date && format(date, "yyyy-MM-dd'T'HH:mm");
 
-export const DateTimeInput = ({ value, ...props }) => (
-  <Input type="datetime-local" value={formatDate(value)} {...props} />
-);
+export const DateTimeInput = ({ value, ...props }) => {
+  console.log("DATETIME", value, props);
+  return (
+    <Input
+      type="datetime-local"
+      value={value ? format(new Date(value), "yyyy-MM-dd'T'hh:mm") : ""}
+      {...props}
+    />
+  );
+};
 
 const AttendeesInput = ({ setError, ...props }) => {
   return (
@@ -85,7 +92,7 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
       description: "",
       url: "",
       attendees: [],
-      allDay: event.allDay,
+      // allDay: event.allDay,
     },
   });
 
@@ -174,14 +181,14 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
                 />
               </FormControl>
             </HStack>
-            <Flex>
+            {/* <Flex>
               <FormControl>
                 <FormLabel mb={0} htmlFor="allDay">
                   All day?
                 </FormLabel>
                 <Checkbox id="allDay" {...register("allDay")} />
               </FormControl>
-            </Flex>
+            </Flex> */}
             <FormControl mt={2}>
               <FormLabel mb={0}>URL</FormLabel>
               <Input placeholder="https://" {...register("url", {})} />

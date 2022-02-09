@@ -11,6 +11,7 @@ import getDay from "date-fns/getDay";
 import enUS from "date-fns/locale/en-US";
 import { useMemo, useRef } from "react";
 import { useKeyPressEvent } from "react-use";
+import { Event } from "../schemas/event";
 
 const localizer = dateFnsLocalizer({
   format,
@@ -31,12 +32,11 @@ function useShortcuts(ref, enabled) {
   useKeyPressEvent("y", () => enabled && handleNavigate(Navigate.NEXT));
 }
 
-type Event = any;
 type IProps = {
-  events: Event[];
+  events: Event[] | undefined;
   shortcutsEnabled: boolean;
-  onSelectEvent: (event: Event) => void;
-  onNewEvent: (event: Event) => void;
+  onSelectEvent: any; // (event: Event) => void;
+  onNewEvent: any; // (event: Event) => void;
 };
 const Calendar: React.FC<IProps> = ({
   events = [],
@@ -54,7 +54,7 @@ const Calendar: React.FC<IProps> = ({
       events.map((e) => ({
         ...e,
         start: new Date(e.start),
-        end: new Date(e.end),
+        end: e.end ? new Date(e.end) : undefined,
       })),
     [events]
   );

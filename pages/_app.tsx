@@ -48,17 +48,11 @@ const theme = extendTheme({
   components: {
     Button: {
       defaultProps: {
-        padding: 7,
+        px: 7,
       },
       baseStyle: {
+        px: 7,
         rounded: "sm",
-      },
-    },
-    FormLabel: {
-      baseStyle: {
-        // textTransform: "uppercase",
-        // fontSize: "xs",
-        // color: "gray.500",
       },
     },
   },

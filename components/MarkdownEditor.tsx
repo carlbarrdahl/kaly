@@ -5,6 +5,7 @@ import {
   OrderedList,
   Text,
   UnorderedList,
+  Link,
   Code,
   Table,
   Thead,
@@ -13,7 +14,7 @@ import {
   Tr,
   Td,
 } from "@chakra-ui/react";
-import Markdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 const components = {
@@ -35,13 +36,14 @@ const components = {
   tr: (p) => <Tr {...p} />,
   th: (p) => <Th {...p} />,
   td: (p) => <Td {...p} />,
+  a: (p) => <Link target="_blank" color="blue.600" {...p} />,
 };
-const Editor = ({ content }) => {
+const Markdown = ({ content }) => {
   return (
-    <Markdown components={components} remarkPlugins={[remarkGfm]}>
+    <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
       {content}
-    </Markdown>
+    </ReactMarkdown>
   );
 };
 
-export default Editor;
+export default Markdown;

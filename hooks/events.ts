@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "../lib/axios";
 import { addressToDid } from "../utils/address";
 import { SelfID } from "@self.id/web";
-import { Event } from "../types/Event";
+import { Event } from "../schemas/event";
 
 async function prepareEvent(event, selfID) {
   console.log("Preparing event...");
@@ -49,9 +49,19 @@ export function useCreateEvent() {
   });
 }
 
+export function useUpdateEvent() {
+  const { ceramic } = useCore();
+  return useMutation(async (event: Event) => {
+    console.log("Update event", event);
+    return TileDocument.load<Event>(ceramic, event.id).then(
+      (doc) => doc && doc.update({ ...doc.content, ...event })
+    );
+  });
+}
+
 export function useEvents() {
   const [{ selfID }]: any = useViewerConnection();
-  return useQuery(
+  return useQuery<Event[], Error>(
     ["events"],
     async ({ signal }) => {
       console.log("Loading events...");
@@ -71,11 +81,9 @@ export function useEvents() {
 
 export function useEvent(id) {
   const { ceramic } = useCore();
-  return useQuery(["events", id], async () => {
-    const tile = await TileDocument.load(ceramic, id);
-    console.log(tile);
-    return loadTile(ceramic, id);
-  });
+  return useQuery<Event, Error>(["events", id], async () =>
+    loadTile(ceramic, id)
+  );
 }
 
 async function loadTile(ceramic, id) {

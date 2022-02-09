@@ -7,7 +7,7 @@ import NewEventModal from "../components/NewEventModal";
 import EventModal from "../components/EventModal";
 import { useCreateEvent, useEvents } from "../hooks/events";
 import { useRouter } from "next/router";
-import { Event } from "../types/Event";
+import { Event } from "../schemas/event";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   return (
     <Box>
       <Calendar
-        events={data as Event[]}
+        events={data}
         shortcutsEnabled={!newEvent}
         onSelectEvent={(event) => router.push(`/event/${event.id}`)}
         // onSelectEvent={setSelectedEvent}

@@ -34,27 +34,62 @@ const manager = new ModelManager(ceramic);
 // Create the schemas
 const itemSchemaID = await manager.createSchema("Event", {
   $schema: "http://json-schema.org/draft-07/schema#",
-  title: "Event",
   type: "object",
+  title: "Event",
   properties: {
-    title: {
+    organizer: {
       type: "string",
-      title: "Title",
-      maxLength: 160,
-    },
-    description: {
-      type: "string",
-      title: "description",
     },
     start: {
       type: "string",
-      title: "start",
     },
     end: {
       type: "string",
-      title: "end",
+    },
+    duration: {
+      type: "string",
+    },
+    title: {
+      type: "string",
+    },
+    description: {
+      type: "string",
+    },
+    url: {
+      type: "string",
+    },
+    attendees: {
+      type: "array",
+      items: {
+        type: "string",
+      },
+    },
+    location: {
+      type: "string",
+    },
+    geo: {
+      type: "object",
+      properties: {
+        lat: {
+          type: "number",
+        },
+        lng: {
+          type: "number",
+        },
+      },
+      required: ["lat", "lng"],
+      additionalProperties: false,
+    },
+    rrule: {
+      type: "string",
+    },
+    classification: {
+      type: "string",
+      enum: ["public", "private", "confidential"],
     },
   },
+  required: ["organizer", "start", "title"],
+  additionalProperties: false,
 });
 
 const eventsSchemaID = await manager.createSchema("Events", {
