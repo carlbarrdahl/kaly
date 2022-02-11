@@ -30,28 +30,42 @@ A decentralized calendar and scheduling app built with Ceramic.
 - [ ] API integration
   - Use Ceramic definitions to integrate on your own website
 
+### Integration with other projects
+
+```ts
+import model from "@kaly/model"; // note: not actually an npm package yet
+
+// Get availablity for eth address, eg a DAO member
+await dataStore.get(model.definitions.availability, addressToDid(ethAddress));
+{
+  availability: {
+    rules: [
+      {
+        type: "wday",
+        intervals: [{ from: "09:00", to: "17:00" }],
+        wday: "monday",
+      },
+      ...
+    ];
+  }
+}
+```
+
 ### Data models
+
+Join the discussion to shape the datamodels: https://github.com/ceramicstudio/datamodels/discussions/34
+
+#### Calendar
 
 #### Event
 
-```ts
-type Event = {
-  organizer: string; // DID
-  start: string;
-  end?: string; // either end OR duration
-  duration?: string;
-  title: string;
-  description?: string;
-  url?: string;
-  attendees: string[]; // DID
-  location?: string;
-  geo: { lat: number; lng: number };
-  rrule?: string;
-  classification: "PUBLIC" | "PRIVATE" | "CONFIDENTIAL";
-};
-```
+TBD
 
 #### Availability
+
+TBD
+
+#### Meeting requests
 
 TBD
 

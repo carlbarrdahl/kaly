@@ -1,5 +1,4 @@
 import { z } from "zod";
-import zodToJsonSchema from "zod-to-json-schema";
 
 /*
 type Event = {
@@ -17,8 +16,41 @@ type Event = {
   classification: "PUBLIC" | "PRIVATE" | "CONFIDENTIAL";
 };
 */
+/*
 
-export const event = z.object({
+type IAvailability = {
+  rules: {
+    type: string;
+    intervals: { from: string; to: string }[];
+    wday: string;
+  }[];
+};
+
+*/
+
+export const availabilitySchema = z.object({
+  rules: z.array(
+    z.object({
+      type: z.string(),
+      intervals: z.array(
+        z
+          .object({ from: z.string(), to: z.string() })
+          .refine(
+            (val) =>
+              !Object.values(val).every((v) =>
+                /^([0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/.test(v)
+              ),
+            { message: "Time must be in HH:MM format" }
+          )
+      ),
+      wday: z.string(),
+    })
+  ),
+});
+
+export type Availability = z.infer<typeof availabilitySchema>;
+
+export const eventSchema = z.object({
   id: z.string(),
   organizer: z.string(),
   start: z.string(), // ISO string "2022-02-08T11:00:00.000Z"
@@ -34,5 +66,4 @@ export const event = z.object({
   classification: z.enum(["public", "private", "confidential"]).optional(),
 });
 
-export const toJson = () => zodToJsonSchema(event);
-export type Event = z.infer<typeof event>;
+export type Event = z.infer<typeof eventSchema>;

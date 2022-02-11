@@ -2,12 +2,10 @@ import type { NextPage } from "next";
 import { useState } from "react";
 import { Box } from "@chakra-ui/react";
 
-import Calendar from "../components/Calendar";
+import Calendar from "../components/features/calendar/Calendar";
 import NewEventModal from "../components/NewEventModal";
-import EventModal from "../components/EventModal";
 import { useCreateEvent, useEvents } from "../hooks/events";
 import { useRouter } from "next/router";
-import { Event } from "../schemas/event";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -27,12 +25,19 @@ const Home: NextPage = () => {
     });
   }
 
+  function handleSelectEvent(e) {
+    router.push(`/event/${e.event.id}`);
+  }
+
+  console.log("events", data);
+
   return (
     <Box>
       <Calendar
+        // @ts-ignore
         events={data}
         shortcutsEnabled={!newEvent}
-        onSelectEvent={(event) => router.push(`/event/${event.id}`)}
+        onSelectEvent={handleSelectEvent}
         // onSelectEvent={setSelectedEvent}
         onNewEvent={setNewEvent}
       />

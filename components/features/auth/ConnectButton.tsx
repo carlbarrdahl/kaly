@@ -11,12 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useViewerConnection } from "@self.id/react";
 import Avatar from "boring-avatars";
-import {
-  useQuery,
-  useQueries,
-  useQueryClient,
-  useIsFetching,
-} from "react-query";
+import { useQueries, useQueryClient, useIsFetching } from "react-query";
 
 async function createAuthProvider() {
   return import("@self.id/web").then(async ({ EthereumAuthProvider }) => {

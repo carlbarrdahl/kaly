@@ -20,16 +20,23 @@ import {
   Kbd,
 } from "@chakra-ui/react";
 import { BsGearFill } from "react-icons/bs";
-import { FiHelpCircle } from "react-icons/fi";
+import {
+  FiHelpCircle,
+  FiSearch,
+  FiCalendar,
+  FiClock,
+  FiUserPlus,
+  FiUsers,
+} from "react-icons/fi";
 import { GrSchedule, GrClock } from "react-icons/gr";
 import { ImCalendar, ImClock } from "react-icons/im";
-import { FiSearch } from "react-icons/fi";
 
 import Link from "./Link";
-import ConnectButton from "./ConnectButton";
+import ConnectButton from "./features/auth/ConnectButton";
 import Head from "next/head";
 import { useIsFetching } from "react-query";
 import HelpModal from "./HelpModal";
+import Manage from "./features/calendar/Manage";
 
 const NavItem = ({ icon, children, disabled = false, href = "#", ...rest }) => {
   return (
@@ -66,6 +73,7 @@ const NavItem = ({ icon, children, disabled = false, href = "#", ...rest }) => {
   );
 };
 
+const SIDEBAR_WIDTH = 60;
 const SidebarContent = (props) => {
   const isGlobalLoading = useIsFetching();
   return (
@@ -83,36 +91,40 @@ const SidebarContent = (props) => {
       bg={useColorModeValue("white", "gray.800")}
       borderColor={useColorModeValue("inherit", "gray.700")}
       borderRightWidth="1px"
-      w={40}
+      w={SIDEBAR_WIDTH}
       {...props}
     >
-      <Text
-        pt={4}
-        fontSize="2xl"
-        // ml="2"
-        color={useColorModeValue("brand.500", "white")}
-        fontWeight="semibold"
-        textAlign="center"
-      >
-        kaly
-      </Text>
-      <Flex
-        direction="column"
-        as="nav"
-        fontSize="sm"
-        color="gray.600"
-        aria-label="Main Navigation"
-      >
-        <NavItem icon={ImCalendar} href="/">
-          Calendar
-        </NavItem>
-        <NavItem icon={ImClock} href="/availability">
-          Availability
-        </NavItem>
-
-        <NavItem disabled icon={BsGearFill}>
-          Settings
-        </NavItem>
+      <Flex direction="column" justifyContent="space-between" height="100%">
+        <Box flex="1 100%">
+          <Text
+            pt={4}
+            fontSize="2xl"
+            // ml="2"
+            color={useColorModeValue("brand.500", "white")}
+            fontWeight="semibold"
+            textAlign="center"
+          >
+            kaly
+          </Text>
+          <Flex
+            direction="column"
+            as="nav"
+            fontSize="sm"
+            color="gray.600"
+            aria-label="Main Navigation"
+          >
+            <NavItem icon={FiCalendar} href="/">
+              Calendar
+            </NavItem>
+            <NavItem icon={FiClock} href="/availability">
+              Availability
+            </NavItem>
+            <NavItem icon={FiUserPlus} href="/meeting">
+              Request meeting
+            </NavItem>
+          </Flex>
+        </Box>
+        <Manage />
       </Flex>
     </Box>
   );
@@ -167,7 +179,7 @@ const Layout: React.FC = ({ children }) => {
           <SidebarContent w="full" borderRight="none" />
         </DrawerContent>
       </Drawer>
-      <Box ml={{ base: 0, md: 40 }} transition=".3s ease" flex={1}>
+      <Box ml={{ base: 0, md: SIDEBAR_WIDTH }} transition=".3s ease" flex={1}>
         <Flex
           as="header"
           align="center"

@@ -3,8 +3,6 @@ import { useCore, useViewerConnection } from "@self.id/react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import axios from "../lib/axios";
-import { addressToDid } from "../utils/address";
-import { SelfID } from "@self.id/web";
 import { Event } from "../schemas/event";
 
 async function prepareEvent(event, selfID) {
@@ -27,7 +25,7 @@ export function useCreateEvent() {
   const queryClient = useQueryClient();
   return useMutation(async (form) => {
     console.log("Creating Tile for event", form);
-    // @ts-ignore
+
     const eventDoc = await core.dataModel.createTile(
       // @ts-ignore
       "Event",
@@ -42,8 +40,6 @@ export function useCreateEvent() {
 
     console.log("Updating index for all attendees and organizer...");
     await axios.post(`/api/event`, event);
-
-    // queryClient.invalidateQueries([""])
 
     return event;
   });
