@@ -160,7 +160,10 @@ const NewEvent = ({ event, isLoading }) => {
         </FormControl>
       </HStack>
       <FormControl mt={2} mb={2}>
-        <RecurrencySetting onChange={(rrule) => setValue("rrule", rrule)} />
+        <RecurrencySetting
+          start={watch("start")}
+          onChange={(rrule) => setValue("rrule", rrule)}
+        />
       </FormControl>
       <FormControl mt={2} mb={2}>
         <FormLabel mb={0} htmlFor="description">
