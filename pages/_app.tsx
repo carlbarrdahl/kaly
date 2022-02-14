@@ -1,62 +1,20 @@
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import "@fullcalendar/common/main.css";
+import "@fullcalendar/daygrid/main.css";
+import "@fullcalendar/timegrid/main.css";
 
 import type { AppProps } from "next/app";
-import type { ModelTypesToAliases } from "@glazed/types";
-import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+import type { ModelTypeAliases, ModelTypesToAliases } from "@glazed/types";
+import { ChakraProvider } from "@chakra-ui/react";
 import { Provider } from "@self.id/react";
 
 import publishedModel from "../lib/ceramic/model.json";
 
 import { CERAMIC_NETWORK } from "../constants";
 import Layout from "../components/Layout";
+import { theme } from "../theme";
 
-const model: ModelTypesToAliases<any> = publishedModel;
-
-const colors = {
-  blue: {
-    "50": "#E5F1FF",
-    "100": "#B8D7FF",
-    "200": "#8ABDFF",
-    "300": "#5CA3FF",
-    "400": "#2E89FF",
-    "500": "#006FFF",
-    "600": "#0059CC",
-    "700": "#004399",
-    "800": "#002C66",
-    "900": "#001633",
-  },
-};
-const theme = extendTheme({
-  colors,
-  styles: {
-    global: {
-      ".rbc-event": {
-        bg: colors.blue["500"],
-        borderRadius: 1,
-        "&:hover": {
-          bg: colors.blue["600"],
-        },
-      },
-      ".rbc-day-slot": {
-        display: "block",
-      },
-    },
-  },
-  borders: {
-    borderRadius: 0,
-  },
-  components: {
-    Button: {
-      defaultProps: {
-        px: 7,
-      },
-      baseStyle: {
-        px: 7,
-        rounded: "sm",
-      },
-    },
-  },
-});
+// const model: ModelTypesToAliases<any> = publishedModel;
+const model: ModelTypesToAliases<ModelTypeAliases<{}, {}>> = publishedModel;
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { state, ...props } = pageProps;

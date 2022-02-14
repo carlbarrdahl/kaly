@@ -1,12 +1,1 @@
-{
-  "definitions": {
-    "events": "kjzl6cwe1jw14956dkub0q70odj0xm529ayej6462rii4wlxx1xzcpi3cav5k6u",
-    "attendee_mapping": "kjzl6cwe1jw14620eosgfubjhf2f3be3pduu0pljoh7i1t6zdi3mwe6vl6ka0xk"
-  },
-  "schemas": {
-    "Event": "ceramic://k3y52l7qbv1frxib7vycs21gjf6ij77i4lukdpe9c9wkunzaho7ezvtyrz2uod3i8",
-    "Events": "ceramic://k3y52l7qbv1frxy3voks4lucz1i2a8j7qrt66jmj88sktvficy3nggl9ahv6c6ebk",
-    "AttendeeMapping": "ceramic://k3y52l7qbv1fry75yt65joaqept0f1m35x4wkeumyowxi2khejx9sgazv9glkumm8"
-  },
-  "tiles": {}
-}
+{"definitions":{"events":"kjzl6cwe1jw146y9bk6a72fr2jw8do9z1klp5wolja8ao9z5yzavr6yws40ojh2"},"schemas":{"Event":"ceramic://k3y52l7qbv1fryquklahoiq9lga8x8jkj4ixmvrxlniwtyfi5lz073o0m8m5zlm2o","Events":"ceramic://k3y52l7qbv1fryileo4c1v5nvk4usaqzo11rzppe0o4y73spljka517b8lgsitdkw"},"tiles":{}}

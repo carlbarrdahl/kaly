@@ -1,5 +1,6 @@
 import {
   Modal,
+  Box,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -20,19 +21,23 @@ import {
 } from "@chakra-ui/react";
 import { useForm, Controller } from "react-hook-form";
 import { CreatableSelect } from "chakra-react-select";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { isENS, isEthereumAddress, isSupportedDID } from "../utils/address";
 
 import { Event } from "../schemas/event";
+import RecurrencySetting from "./features/calendar/RecurrencySetting";
 
-const formatDate = (date) => date && format(date, "yyyy-MM-dd'T'HH:mm");
+const formatDate = (date) => {
+  if (!isValid(date)) return null;
+  return date && format(date, "yyyy-MM-dd'T'HH:mm");
+};
 
 export const DateTimeInput = ({ value, ...props }) => {
   console.log("DATETIME", value, props);
   return (
     <Input
       type="datetime-local"
-      value={value ? format(new Date(value), "yyyy-MM-dd'T'hh:mm") : ""}
+      value={value ? format(new Date(value), "yyyy-MM-dd'T'HH:mm") : ""}
       {...props}
     />
   );
@@ -81,8 +86,9 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
     setError,
     getValues,
     reset,
+    watch,
     formState: { errors },
-  } = useForm<Event>({
+  } = useForm<Event & { allDay: boolean }>({
     mode: "onBlur",
     reValidateMode: "onChange",
     defaultValues: {
@@ -92,18 +98,17 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
       description: "",
       url: "",
       attendees: [],
-      // allDay: event.allDay,
+      rrule: "",
+      allDay: event.allDay,
     },
   });
 
   return (
     <Modal isOpen={isOpen} onClose={() => onClose()} size="xl">
-      {/* <ModalOverlay /> */}
       <ModalContent shadow="dark-lg">
         <form
           onSubmit={handleSubmit((form) => {
             onClose(form);
-            // reset();
           })}
         >
           <ModalHeader> </ModalHeader>
@@ -120,7 +125,60 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
                 {...register("title", { required: true })}
               />
             </FormControl>
+            <HStack mt={2}>
+              <FormControl>
+                <FormLabel mb={0} htmlFor="start">
+                  Start
+                </FormLabel>
+                <Input
+                  pr={0}
+                  size="sm"
+                  type="datetime-local"
+                  id="start"
+                  value={formatDate(watch("start"))}
+                  {...register("start", { valueAsDate: true })}
+                  min={formatDate(new Date())}
+                  onChange={(e) => {
+                    setValue(
+                      "start",
+                      new Date(e.target.value || Date.now()).toISOString()
+                    );
+                  }}
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel mb={0}>End</FormLabel>
+                <Input
+                  pr={0}
+                  size="sm"
+                  type="datetime-local"
+                  id="end"
+                  isDisabled={Boolean(watch("allDay"))}
+                  value={formatDate(watch("end"))}
+                  {...register("end", { valueAsDate: true })}
+                  min={formatDate(watch("start"))}
+                  onChange={(e) => {
+                    setValue(
+                      "end",
+                      new Date(e.target.value || Date.now()).toISOString()
+                    );
+                  }}
+                />
+              </FormControl>
+            </HStack>
 
+            <FormControl mt={2} as={HStack}>
+              <FormLabel w={16} mr={0} mb={0} htmlFor="allDay">
+                All day
+              </FormLabel>
+              <Checkbox id="allDay" {...register("allDay")} />
+            </FormControl>
+            <Box mt={2}>
+              <RecurrencySetting
+                start={watch("start")}
+                onChange={(rrule) => setValue("rrule", rrule)}
+              />
+            </Box>
             <FormControl mt={2}>
               <FormLabel mb={0} htmlFor="description">
                 Description
@@ -128,13 +186,11 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
               <Textarea
                 id="description"
                 rows={4}
-                placeholder={`# Meeting
-- Markdown is supported
-                `}
+                placeholder={`Markdown is supported...`}
                 {...register("description", {})}
               />
             </FormControl>
-            <FormControl mt={2} isInvalid={!!errors.attendees}>
+            {/* <FormControl mt={2} isInvalid={!!errors.attendees}>
               <FormLabel mb={0} htmlFor="attendees">
                 Attendees
               </FormLabel>
@@ -155,44 +211,12 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
                 setError={setError}
               />
             </FormControl>
-            <HStack mt={2}>
-              <FormControl>
-                <FormLabel mb={0} htmlFor="start">
-                  Start
-                </FormLabel>
-                <Input
-                  pr={0}
-                  size="sm"
-                  type="datetime-local"
-                  id="start"
-                  value={formatDate(getValues("start"))}
-                  {...register("start", { required: true, valueAsDate: true })}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel mb={0}>End</FormLabel>
-                <Input
-                  pr={0}
-                  size="sm"
-                  type="datetime-local"
-                  id="end"
-                  value={formatDate(getValues("end"))}
-                  {...register("end", { valueAsDate: true })}
-                />
-              </FormControl>
-            </HStack>
-            {/* <Flex>
-              <FormControl>
-                <FormLabel mb={0} htmlFor="allDay">
-                  All day?
-                </FormLabel>
-                <Checkbox id="allDay" {...register("allDay")} />
-              </FormControl>
-            </Flex> */}
-            <FormControl mt={2}>
+               */}
+
+            {/* <FormControl mt={2}>
               <FormLabel mb={0}>URL</FormLabel>
               <Input placeholder="https://" {...register("url", {})} />
-            </FormControl>
+            </FormControl> */}
           </ModalBody>
 
           <ModalFooter>
