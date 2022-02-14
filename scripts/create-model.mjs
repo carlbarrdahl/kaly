@@ -89,7 +89,7 @@ const itemSchemaID = await manager.createSchema("Event", {
     },
   },
   required: ["organizer", "start", "title"],
-  additionalProperties: false,
+  additionalProperties: true,
 });
 
 const eventsSchemaID = await manager.createSchema("Events", {
@@ -111,12 +111,6 @@ await manager.createDefinition("events", {
   name: "Events",
   description: "Collection of Calendar Events",
   schema: manager.getSchemaURL(eventsSchemaID),
-});
-
-await manager.createDefinition("attendee_mapping", {
-  name: "AttendeeMapping",
-  description: "Maps attendees to Events",
-  schema: manager.getSchemaURL(mappingSchemaID),
 });
 
 // Write model to JSON file
