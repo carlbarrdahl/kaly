@@ -24,7 +24,10 @@ const Manage = ({}) => {
   return (
     <Box maxW="300">
       <Text fontSize="sm" pl={4} mb={2} color="gray.700">
-        Calendars
+        Calendars{" "}
+        <Text ml={4} as="span" fontSize="xs" color="gray.400">
+          (not implemented)
+        </Text>
       </Text>
       <Accordion defaultIndex={[0]}>
         <AccordionItem>

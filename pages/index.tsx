@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   }
 
   console.log("events", data);
-
+  console.log(newEvent);
   return (
     <Box>
       <Calendar

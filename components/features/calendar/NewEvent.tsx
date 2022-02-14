@@ -37,6 +37,8 @@ import {
 
 import { Event } from "../../../schemas/event";
 import { useEffect, useRef, useState } from "react";
+import RecurrencySetting from "./RecurrencySetting";
+import DateSelector from "../../DateSelector";
 
 const formatDate = (date) => date && format(date, "yyyy-MM-dd'T'HH:mm");
 
@@ -50,97 +52,6 @@ export const DateTimeInput = ({ value, ...props }) => {
   );
 };
 
-const SelectDateTime = () => {
-  const [date, setDate] = useState<CalendarDate>();
-  const [value, setValue] = useState("");
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const initialRef = useRef(null);
-  const calendarRef = useRef(null);
-
-  const handleSelectDate = (date) => {
-    setDate(date);
-    setValue(() => (isValid(date) ? format(date, "MM/dd/yyyy") : ""));
-    onClose();
-  };
-
-  const match = (value: string) => value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-
-  const handleInputChange = ({ target }) => {
-    setValue(target.value);
-
-    if (match(target.value)) {
-      onClose();
-    }
-  };
-
-  useOutsideClick({
-    ref: calendarRef,
-    handler: onClose,
-    enabled: isOpen,
-  });
-
-  useEffect(() => {
-    if (match(value)) {
-      const date = new Date(value);
-
-      return setDate(date);
-    }
-  }, [value]);
-
-  return (
-    <Box minH="400px">
-      <Popover
-        // placement="auto-start"
-        isOpen={isOpen}
-        onClose={onClose}
-        initialFocusRef={initialRef}
-        isLazy
-      >
-        <PopoverTrigger>
-          <Box onClick={onOpen} ref={initialRef}>
-            <Input
-              placeholder="MM/dd/yyyy"
-              value={value}
-              onChange={handleInputChange}
-            />
-          </Box>
-        </PopoverTrigger>
-
-        <PopoverContent
-          // p={0}
-          // w="min-content"
-          // border="none"
-          // outline="none"
-          // _focus={{ boxShadow: "none" }}
-          ref={calendarRef}
-        >
-          <Calendar
-            value={{ start: date }}
-            onSelectDate={handleSelectDate}
-            singleDateSelection
-          >
-            <PopoverBody p={0}>
-              <CalendarControls>
-                <CalendarPrevButton />
-                <CalendarNextButton />
-              </CalendarControls>
-
-              <CalendarMonths>
-                <CalendarMonth>
-                  <CalendarMonthName />
-                  <CalendarWeek />
-                  <CalendarDays />
-                </CalendarMonth>
-              </CalendarMonths>
-            </PopoverBody>
-          </Calendar>
-        </PopoverContent>
-      </Popover>
-    </Box>
-  );
-};
 const options = [
   {
     label: "15 minutes",
@@ -187,6 +98,7 @@ const NewEvent = ({ event, isLoading }) => {
     setValue,
     setError,
     getValues,
+    watch,
     reset,
     formState: { errors },
   } = useForm<Event>({
@@ -223,7 +135,34 @@ const NewEvent = ({ event, isLoading }) => {
         />
       </FormControl>
 
-      <FormControl mt={2}>
+      <FormControl mt={2} mb={2}>
+        <FormLabel mb={0} htmlFor="duration">
+          Duration
+        </FormLabel>
+        <DurationInput
+          control={control}
+          id="duration"
+          {...register("duration", {})}
+        />
+      </FormControl>
+
+      <HStack mt={2} mb={2}>
+        <FormControl>
+          <FormLabel mb={0} htmlFor="start">
+            Start
+          </FormLabel>
+          <DateSelector
+            // @ts-ignore
+            value={watch("start")}
+            formatStyle="EEE dd MMM yyyy HH:mm"
+            onChange={(val) => setValue("start", val)}
+          />
+        </FormControl>
+      </HStack>
+      <FormControl mt={2} mb={2}>
+        <RecurrencySetting onChange={(rrule) => setValue("rrule", rrule)} />
+      </FormControl>
+      <FormControl mt={2} mb={2}>
         <FormLabel mb={0} htmlFor="description">
           Description
         </FormLabel>
@@ -237,25 +176,6 @@ const NewEvent = ({ event, isLoading }) => {
         />
       </FormControl>
 
-      <FormControl mt={2}>
-        <FormLabel mb={0} htmlFor="duration">
-          Duration
-        </FormLabel>
-        <DurationInput
-          control={control}
-          id="duration"
-          {...register("duration", {})}
-        />
-      </FormControl>
-
-      <HStack mt={2}>
-        <FormControl>
-          <FormLabel mb={0} htmlFor="start">
-            Start
-          </FormLabel>
-          <SelectDateTime />
-        </FormControl>
-      </HStack>
       <ButtonGroup>
         <Button px={7} isLoading={isLoading} type="submit" colorScheme="blue">
           Save

@@ -37,7 +37,12 @@ import {
 
 import { useEffect, useRef, useState, ChangeEvent } from "react";
 
-const PopoutCalendar = () => {
+const FORMAT_STYLE = "EEE dd MMM yyyy";
+const CalendarPopover = ({
+  formatStyle = FORMAT_STYLE,
+  children,
+  onChange,
+}) => {
   const [date, setDate] = useState<CalendarDate>();
   const [value, setValue] = useState("");
 
@@ -48,8 +53,9 @@ const PopoutCalendar = () => {
 
   const handleSelectDate = (date) => {
     setDate(date);
-    setValue(() => (isValid(date) ? format(date, "MM/dd/yyyy") : ""));
+    setValue(() => (isValid(date) ? format(date, formatStyle) : ""));
     onClose();
+    onChange(date);
   };
 
   const match = (value: string) => value.match(/(\d{2})\/(\d{2})\/(\d{4})/);
@@ -77,9 +83,9 @@ const PopoutCalendar = () => {
   }, [value]);
 
   return (
-    <Box minH="400px">
+    <Box>
       <Popover
-        placement="auto-start"
+        placement="bottom"
         isOpen={isOpen}
         onClose={onClose}
         initialFocusRef={initialRef}
@@ -87,11 +93,7 @@ const PopoutCalendar = () => {
       >
         <PopoverTrigger>
           <Box onClick={onOpen} ref={initialRef}>
-            <Input
-              placeholder="MM/dd/yyyy"
-              value={value}
-              onChange={handleInputChange}
-            />
+            {children}
           </Box>
         </PopoverTrigger>
 
@@ -129,4 +131,4 @@ const PopoutCalendar = () => {
   );
 };
 
-export default PopoutCalendar;
+export default CalendarPopover;
