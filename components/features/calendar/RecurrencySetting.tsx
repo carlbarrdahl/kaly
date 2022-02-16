@@ -3,7 +3,9 @@ import {
   HStack,
   Text,
   Input,
+  Checkbox,
   Select,
+  FormLabel,
   FormControl,
   InputGroup,
   NumberInput,
@@ -29,6 +31,7 @@ const RecurrencySetting: React.FC<{
   onChange(rrule: string): void;
 }> = ({ start, onChange = () => {} }) => {
   const [endType, setEndType] = useState("0");
+  const [isActive, toggleActive] = useState(false);
   const { register, watch, handleSubmit, getValues, setValue } = useForm({
     mode: "all",
     reValidateMode: "onChange",
@@ -62,76 +65,96 @@ const RecurrencySetting: React.FC<{
       }
       const rruleStr = new RRule(form).toString();
       console.log(rruleStr);
-      onChange(rruleStr);
+      onChange(isActive ? rruleStr : "");
     } catch (error) {
       console.log(error);
     }
   }, [formData, onChange]);
   return (
     <Box>
-      <FormControl as={HStack} mb={2}>
-        <Text width={16}>Repeats</Text>
-        <Select {...register("freq")} width={28}>
-          <option value={RRule.DAILY}>daily</option>
-          <option value={RRule.WEEKLY}>weekly</option>
-          <option value={RRule.MONTHLY}>monthly</option>
-          <option value={RRule.YEARLY}>yearly</option>
-        </Select>
-        <Text>every</Text>
-        {/* @ts-ignore */}
-        <NumberInput
-          id="interval"
-          {...register("interval", { valueAsNumber: true })}
-          width={20}
-          min={0}
-          onChange={(e) => {
-            setValue("interval", +e);
-          }}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-        <Text>{labels[watch("freq")].interval}</Text>
-      </FormControl>
-      <FormControl as={HStack}>
-        <Text as="div" width={16}>
-          Ends
-        </Text>
-        <Select {...register("ends", { valueAsNumber: true })} width={28}>
-          <option value={0}>never</option>
-          <option value={1}>on date</option>
-          <option value={2}>after</option>
-        </Select>
-        {watch("ends") === 1 ? (
-          <DateSelector
-            onChange={(e) => {
-              setValue("until", e);
-            }}
-            width={48}
+      <FormControl as={HStack} mb={2} justifyContent="space-between">
+        <HStack>
+          <FormLabel my={2} htmlFor="repeats" width={16}>
+            Repeats
+          </FormLabel>
+          <Checkbox
+            id="repeats"
+            pr={4}
+            isChecked={isActive}
+            onChange={() => toggleActive(!isActive)}
           />
-        ) : watch("ends") === 2 ? (
-          <InputGroup width={48} as={HStack}>
-            <NumberInput
-              // @ts-ignore
-              min={0}
-              {...register("count", { valueAsNumber: true })}
-              onChange={(e) => {
-                setValue("count", +e);
-              }}
-            >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <Text>occurrences</Text>
-          </InputGroup>
-        ) : null}
+          {isActive ? (
+            <>
+              <Select {...register("freq")} width={28}>
+                <option value={RRule.DAILY}>daily</option>
+                <option value={RRule.WEEKLY}>weekly</option>
+                <option value={RRule.MONTHLY}>monthly</option>
+                <option value={RRule.YEARLY}>yearly</option>
+              </Select>
+              <Text>every</Text>
+              {/* @ts-ignore */}
+              <NumberInput
+                id="interval"
+                {...register("interval", { valueAsNumber: true })}
+                width={20}
+                min={0}
+                onChange={(e) => {
+                  setValue("interval", +e);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+              <Text>{labels[watch("freq")].interval}</Text>
+            </>
+          ) : null}
+        </HStack>
       </FormControl>
+      {isActive ? (
+        <FormControl as={HStack}>
+          <FormLabel my={2} as="div" width={24}>
+            Ends
+          </FormLabel>
+          <Select
+            pl={2}
+            {...register("ends", { valueAsNumber: true })}
+            width={28}
+          >
+            <option value={0}>never</option>
+            <option value={1}>on date</option>
+            <option value={2}>after</option>
+          </Select>
+          {watch("ends") === 1 ? (
+            <DateSelector
+              onChange={(e) => {
+                setValue("until", e);
+              }}
+              width={48}
+            />
+          ) : watch("ends") === 2 ? (
+            <InputGroup width={48} as={HStack}>
+              <NumberInput
+                // @ts-ignore
+                min={0}
+                {...register("count", { valueAsNumber: true })}
+                onChange={(e) => {
+                  setValue("count", +e);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+              <Text>occurrences</Text>
+            </InputGroup>
+          ) : null}
+        </FormControl>
+      ) : null}
     </Box>
   );
 };

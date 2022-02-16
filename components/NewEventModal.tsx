@@ -168,7 +168,7 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
             </HStack>
 
             <FormControl mt={2} as={HStack}>
-              <FormLabel w={16} mr={0} mb={0} htmlFor="allDay">
+              <FormLabel my={2} w={16} htmlFor="allDay">
                 All day
               </FormLabel>
               <Checkbox id="allDay" {...register("allDay")} />
