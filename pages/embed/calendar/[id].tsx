@@ -93,23 +93,24 @@ const CalendarEmbed: NextPage = () => {
   //   if (!data) {
   //     return <Button>No event found</Button>;
   //   }
-  const view = getView(router.query.view);
+  const view = getView(router?.query?.view as string);
   console.log(view, router.query.view);
-  return (
-    router.isReady && (
-      <Box>
-        <CalendarMinimal
-          // @ts-ignore
-          events={[
-            {
-              title: "Test",
-              start: new Date().toISOString(),
-            },
-          ]}
-          view={view}
-        />
-      </Box>
-    )
+  return router.isReady ? (
+    <Box>
+      <CalendarMinimal
+        events={[
+          {
+            // @ts-ignore
+            title: "Test",
+            // @ts-ignore
+            start: new Date().toISOString(),
+          },
+        ]}
+        view={view}
+      />
+    </Box>
+  ) : (
+    <div></div>
   );
 };
 

@@ -175,9 +175,8 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
               <Checkbox id="allDay" {...register("allDay")} />
             </FormControl>
             <TokenGate
-
-            // start={watch("start")}
-            // onChange={(rrule) => setValue("rrule", rrule)}
+              // start={watch("start")}
+              onChange={console.log}
             />
             <Box mt={0}>
               <RecurrencySetting
