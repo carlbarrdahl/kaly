@@ -168,7 +168,7 @@ const EventEmbed: NextPage = () => {
   return (
     <LayoutEmbed>
       <Box maxW={"xs"}>
-        {true || createEvent.isSuccess ? (
+        {createEvent.isSuccess ? (
           <Box>
             <a
               target="_blank"
