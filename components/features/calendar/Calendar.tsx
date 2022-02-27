@@ -31,6 +31,7 @@ const Calendar = ({
 
   useShortcuts(ref, shortcutsEnabled);
 
+  console.log("Calendar events", events);
   return (
     <FullCalendar
       // @ts-ignore

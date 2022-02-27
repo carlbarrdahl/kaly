@@ -29,9 +29,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           model,
         }}
       >
-        <Layout>
-          <Component {...props} />
-        </Layout>
+        <Component {...props} />
       </Provider>
     </ChakraProvider>
   );

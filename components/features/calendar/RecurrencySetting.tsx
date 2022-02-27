@@ -28,7 +28,7 @@ const labels = {
 
 const RecurrencySetting: React.FC<{
   start: any;
-  onChange(rrule: string): void;
+  onChange(rrule: string | undefined): void;
 }> = ({ start, onChange = () => {} }) => {
   const [endType, setEndType] = useState("0");
   const [isActive, toggleActive] = useState(false);
@@ -65,7 +65,7 @@ const RecurrencySetting: React.FC<{
       }
       const rruleStr = new RRule(form).toString();
       console.log(rruleStr);
-      onChange(isActive ? rruleStr : "");
+      onChange(isActive ? rruleStr : undefined);
     } catch (error) {
       console.log(error);
     }

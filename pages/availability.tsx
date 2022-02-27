@@ -2,10 +2,11 @@ import { NextPage } from "next";
 import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
 
 import RuleConfig from "../components/features/availability/RuleConfig";
+import Layout from "../components/Layout";
 
 const Availability: NextPage = () => {
   return (
-    <Box>
+    <Layout>
       <SimpleGrid
         templateColumns={["none", "none", "none", "2fr 1fr"]}
         spacing="8"
@@ -17,7 +18,7 @@ const Availability: NextPage = () => {
           <Heading fontSize="sm">Date overrides</Heading>
         </Box>
       </SimpleGrid>
-    </Box>
+    </Layout>
   );
 };
 

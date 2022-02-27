@@ -1,8 +1,9 @@
 import { Box } from "@chakra-ui/layout";
 import { NextPage } from "next";
+import Layout from "../../components/Layout";
 
 const MeetingPage: NextPage = () => {
-  return <Box>Coming soon</Box>;
+  return <Layout>Coming soon</Layout>;
 };
 
 export default MeetingPage;

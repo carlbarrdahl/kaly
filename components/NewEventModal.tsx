@@ -107,7 +107,7 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={() => onClose()} size="xl">
       <ModalContent shadow="dark-lg">
         <form
-          onSubmit={handleSubmit((form) => {
+          onSubmit={handleSubmit(({allDay, ...form}) => {
             onClose(form);
           })}
         >

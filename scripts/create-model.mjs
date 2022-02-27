@@ -97,11 +97,12 @@ const eventsSchemaID = await manager.createSchema("Events", {
   title: "Events",
   type: "object",
   properties: {
-    type: "array",
-    title: "items",
-    items: {
-      $comment: `cip88:ref:${manager.getSchemaURL(itemSchemaID)}`,
-      type: "string",
+    events: {
+      type: "array",
+      items: {
+        $comment: `cip88:ref:${manager.getSchemaURL(itemSchemaID)}`,
+        type: "string",
+      },
     },
   },
 });

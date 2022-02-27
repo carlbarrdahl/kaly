@@ -24,7 +24,7 @@ async function createAuthProvider() {
   });
 }
 
-function useConnect(autoConnect) {
+export function useConnect() {
   const queryClient = useQueryClient();
   const [connection, connect, disconnect] = useViewerConnection();
   const [{ refetch: _connect }, { refetch: _disconnect }] = useQueries([
@@ -34,7 +34,7 @@ function useConnect(autoConnect) {
         createAuthProvider()
           .then(connect)
           .then((user) => localStorage.setItem("did", user?.id || "")),
-      enabled: autoConnect,
+      enabled: !!global.localStorage?.getItem("did"),
     },
     {
       queryKey: "disconnect",
@@ -51,9 +51,7 @@ function useConnect(autoConnect) {
 }
 const ConnectButton: React.FC = () => {
   const isGlobalLoading = useIsFetching();
-  const { connection, connect, disconnect } = useConnect(
-    !!global.localStorage?.getItem("did")
-  );
+  const { connection, connect, disconnect } = useConnect();
 
   return connection.status === "connected" ? (
     <>

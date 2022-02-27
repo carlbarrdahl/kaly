@@ -6,6 +6,7 @@ import Calendar from "../components/features/calendar/Calendar";
 import NewEventModal from "../components/NewEventModal";
 import { useCreateEvent, useEvents } from "../hooks/events";
 import { useRouter } from "next/router";
+import Layout from "../components/Layout";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -32,7 +33,7 @@ const Home: NextPage = () => {
   console.log("events", data);
   console.log(newEvent);
   return (
-    <Box>
+    <Layout>
       <Calendar
         // @ts-ignore
         events={data}
@@ -55,7 +56,7 @@ const Home: NextPage = () => {
           onClose={handleCreateEvent}
         />
       ) : null}
-    </Box>
+    </Layout>
   );
 };
 

@@ -12,16 +12,36 @@ import {
   ListItem,
   ListIcon,
   Textarea,
+  IconButton,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { DateTimeInput } from "../../components/NewEventModal";
-import { useEvent, useUpdateEvent } from "../../hooks/events";
+import { useEvent, useUpdateEvent, useAddToCalendar } from "../../hooks/events";
 import Avatar from "boring-avatars";
 import Editor from "../../components/MarkdownEditor";
 import { truncate } from "../../utils/format";
 import { useViewerConnection } from "@self.id/react";
+import { FiArrowLeft } from "react-icons/fi";
+import Link from "next/link";
+import Layout from "../../components/Layout";
+
+const AddToCalendarButton = ({ event }) => {
+  const { isLoading, mutate } = useAddToCalendar();
+  return (
+    <Button
+      px={7}
+      isLoading={isLoading}
+      type="submit"
+      ml={4}
+      colorScheme={"blue"}
+      onClick={() => mutate(event.id)}
+    >
+      Add to calendar
+    </Button>
+  );
+};
 
 const EventDetails = ({ event, isOwner, isLoading, isUpdating, onUpdate }) => {
   console.log("EventDetails", event);
@@ -36,6 +56,14 @@ const EventDetails = ({ event, isOwner, isLoading, isUpdating, onUpdate }) => {
   return (
     <form onSubmit={handleSubmit(onUpdate)}>
       <Flex flex="1 1 auto" bg="white" height="100%" flexWrap="wrap">
+        <Link href="/" passHref>
+          <IconButton
+            as="a"
+            aria-label="Back"
+            variant={"ghost"}
+            icon={<FiArrowLeft />}
+          />
+        </Link>
         <Box flex="0.5 0 300px" mr={[0, 0, 16]}>
           <Skeleton isLoaded={!isLoading}>
             <Flex mb={4}>
@@ -56,15 +84,7 @@ const EventDetails = ({ event, isOwner, isLoading, isUpdating, onUpdate }) => {
                   Save
                 </Button>
               ) : (
-                <Button
-                  px={7}
-                  isLoading={isUpdating}
-                  type="submit"
-                  ml={4}
-                  colorScheme={"blue"}
-                >
-                  Join
-                </Button>
+                <AddToCalendarButton event={event} />
               )}
             </Flex>
           </Skeleton>
@@ -98,7 +118,7 @@ const EventDetails = ({ event, isOwner, isLoading, isUpdating, onUpdate }) => {
             </Skeleton>
           </Box>
         </Box>
-        <Box flex="0 0 200px">
+        {/* <Box flex="0 0 200px">
           <FormControl mt={2}>
             <List spacing={3}>
               <FormLabel htmlFor="attendees">
@@ -114,7 +134,7 @@ const EventDetails = ({ event, isOwner, isLoading, isUpdating, onUpdate }) => {
               ))}
             </List>
           </FormControl>
-        </Box>
+        </Box> */}
       </Flex>
     </form>
   );
@@ -132,20 +152,29 @@ const EventPage: NextPage = () => {
     return <Box>loading...</Box>;
   }
   return (
-    <EventDetails
-      event={data}
-      isLoading={isLoading}
-      isUpdating={updateEvent.isLoading}
-      isOwner={isOwner}
-      onUpdate={(updatedEvent) => {
-        console.log("updated", updatedEvent);
-        updateEvent.mutate(updatedEvent, {
-          onSuccess: (res) => {
-            console.log("Event updated", res);
-          },
-        });
-      }}
-    />
+    <Layout>
+      <EventDetails
+        event={data}
+        isLoading={isLoading}
+        isUpdating={updateEvent.isLoading}
+        isOwner={isOwner}
+        onUpdate={(updatedEvent) => {
+          console.log("updated", updatedEvent);
+          updateEvent.mutate(updatedEvent, {
+            onSuccess: (res) => {
+              console.log("Event updated", res);
+            },
+          });
+        }}
+      />
+      <iframe
+        width="320"
+        height="320"
+        scrolling="no"
+        style={{ display: "inline" }}
+        src={`${window.location?.origin}/embed/event/${data.id}`}
+      />
+    </Layout>
   );
 };
 
