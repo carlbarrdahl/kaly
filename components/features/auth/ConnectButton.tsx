@@ -24,6 +24,29 @@ async function createAuthProvider() {
   });
 }
 
+const storage = {
+  get: (key) => {
+    try {
+      return localStorage.getItem(key);
+    } catch (error) {
+      return null;
+    }
+  },
+  set: (key, data) => {
+    try {
+      return localStorage.setItem(key, data);
+    } catch (error) {
+      return null;
+    }
+  },
+  remove: (key) => {
+    try {
+      return localStorage.removeItem(key);
+    } catch (error) {
+      return null;
+    }
+  },
+};
 export function useConnect() {
   const queryClient = useQueryClient();
   const [connection, connect, disconnect] = useViewerConnection();
@@ -33,14 +56,14 @@ export function useConnect() {
       queryFn: () =>
         createAuthProvider()
           .then(connect)
-          .then((user) => localStorage.setItem("did", user?.id || "")),
-      enabled: !!global.localStorage?.getItem("did"),
+          .then((user) => storage.set("did", user?.id || "")),
+      enabled: !!storage.get("did"),
     },
     {
       queryKey: "disconnect",
       queryFn: () => {
         disconnect();
-        localStorage.removeItem("did");
+        storage.remove("did");
         queryClient.clear();
       },
       enabled: false,
