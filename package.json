@@ -48,6 +48,7 @@
     "ics": "^2.35.0",
     "key-did-provider-ed25519": "^1.1.0",
     "key-did-resolver": "^1.4.4",
+    "lit-ceramic-sdk": "^1.1.12",
     "next": "12.1.0",
     "next-connect": "^0.12.2",
     "next-seo": "^5.1.0",

@@ -26,6 +26,7 @@ import { isENS, isEthereumAddress, isSupportedDID } from "../utils/address";
 
 import { Event } from "../schemas/event";
 import RecurrencySetting from "./features/calendar/RecurrencySetting";
+import TokenGate from "./features/calendar/TokenGate";
 
 const formatDate = (date) => {
   if (!isValid(date)) return null;
@@ -107,7 +108,7 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={() => onClose()} size="xl">
       <ModalContent shadow="dark-lg">
         <form
-          onSubmit={handleSubmit(({allDay, ...form}) => {
+          onSubmit={handleSubmit(({ allDay, ...form }) => {
             onClose(form);
           })}
         >
@@ -168,17 +169,23 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
             </HStack>
 
             <FormControl mt={2} as={HStack}>
-              <FormLabel my={2} w={16} htmlFor="allDay">
+              <FormLabel my={0} w={16} htmlFor="allDay">
                 All day
               </FormLabel>
               <Checkbox id="allDay" {...register("allDay")} />
             </FormControl>
-            <Box mt={2}>
+            <TokenGate
+
+            // start={watch("start")}
+            // onChange={(rrule) => setValue("rrule", rrule)}
+            />
+            <Box mt={0}>
               <RecurrencySetting
                 start={watch("start")}
                 onChange={(rrule) => setValue("rrule", rrule)}
               />
             </Box>
+            <Box mt={0}></Box>
             <FormControl mt={2}>
               <FormLabel mb={0} htmlFor="description">
                 Description
