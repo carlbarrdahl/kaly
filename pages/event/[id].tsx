@@ -167,13 +167,6 @@ const EventPage: NextPage = () => {
           });
         }}
       />
-      <iframe
-        width="320"
-        height="320"
-        scrolling="no"
-        style={{ display: "inline" }}
-        src={`${window.location?.origin}/embed/event/${data.id}`}
-      />
     </Layout>
   );
 };
