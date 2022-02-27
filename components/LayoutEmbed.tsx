@@ -5,10 +5,9 @@ import { useConnect } from "./features/auth/ConnectButton";
 const ConnectButton = () => {
   const { connection, connect, disconnect } = useConnect();
 
-  console.log(connection);
   return (
     <Button
-      isLoading={["connecting", "idle"].includes(connection.status)}
+      isLoading={["connecting"].includes(connection.status)}
       onClick={() => connect()}
     >
       Connect Wallet

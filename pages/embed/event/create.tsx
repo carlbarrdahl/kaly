@@ -22,6 +22,7 @@ import { Controller, useForm } from "react-hook-form";
 import CalendarPopover from "../../../components/features/calendar/CalendarPopover";
 import { CreatableSelect } from "chakra-react-select";
 import { useCreateEvent } from "../../../hooks/events";
+import Link from "next/link";
 
 const options = [
   {
@@ -167,10 +168,22 @@ const EventEmbed: NextPage = () => {
   return (
     <LayoutEmbed>
       <Box maxW={"xs"}>
-        <CreateEventForm
-          isCreating={createEvent.isLoading}
-          onCreate={createEvent.mutate}
-        />
+        {true || createEvent.isSuccess ? (
+          <Box>
+            <a
+              target="_blank"
+              href={`${global.location?.origin}/event/${createEvent.data?.id}`}
+              rel="noreferrer"
+            >
+              <Button>Open event</Button>
+            </a>
+          </Box>
+        ) : (
+          <CreateEventForm
+            isCreating={createEvent.isLoading}
+            onCreate={createEvent.mutate}
+          />
+        )}
       </Box>
     </LayoutEmbed>
   );
