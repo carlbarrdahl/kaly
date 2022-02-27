@@ -1,36 +1,18 @@
-import {
-  Box,
-  Input,
-  Flex,
-  Skeleton,
-  HStack,
-  Button,
-  Text,
-  FormControl,
-  FormLabel,
-  List,
-  ListItem,
-  ListIcon,
-  Textarea,
-  IconButton,
-  Icon,
-  Heading,
-} from "@chakra-ui/react";
+import { Box, HStack, Button, Text, Icon, Heading } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
   useEvent,
-  useUpdateEvent,
   useAddToCalendar,
   useCalendar,
   useRemoveFromCalendar,
 } from "../../../hooks/events";
-import { useViewerConnection } from "@self.id/react";
 
-import { FiCalendar, FiCheck, FiCircle } from "react-icons/fi";
-import { useConnect } from "../../../components/features/auth/ConnectButton";
+import type { Event } from "../../../schemas/event";
+
+import { FiCalendar, FiCheck } from "react-icons/fi";
 import { format } from "date-fns";
-import RRule, { rrulestr } from "rrule";
+import { rrulestr } from "rrule";
 import Markdown from "../../../components/MarkdownEditor";
 import LayoutEmbed from "../../../components/LayoutEmbed";
 
@@ -59,21 +41,14 @@ const AddToCalendarButton = ({ event }) => {
   );
 };
 
-const ConnectButton = () => {
-  const { connection, connect, disconnect } = useConnect();
-
-  console.log(connection);
-  return (
-    <Button
-      isLoading={["connecting", "idle"].includes(connection.status)}
-      onClick={() => connect()}
-    >
-      Connect Wallet
-    </Button>
-  );
-};
-
-const EventCard = ({ id, start, end, title, description = "", rrule = "" }) => {
+const EventCard: React.FunctionComponent<Event> = ({
+  id,
+  start,
+  end,
+  title,
+  description = "",
+  rrule = "",
+}) => {
   return (
     <Box maxW={"xs"}>
       <HStack divider={<Text px={1}>⋅</Text>}>
@@ -81,7 +56,8 @@ const EventCard = ({ id, start, end, title, description = "", rrule = "" }) => {
           {format(new Date(start), "EEE dd MMM yyyy")}
         </Text>
         <Text fontSize="xs">
-          {format(new Date(start), "HH:mm")} - {format(new Date(end), "HH:mm")}{" "}
+          {format(new Date(start), "HH:mm")} -{" "}
+          {end ? format(new Date(end), "HH:mm") : ""}{" "}
         </Text>
       </HStack>
       <Heading fontSize={"xl"}>{title}</Heading>
