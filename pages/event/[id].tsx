@@ -146,15 +146,11 @@ const EventPage: NextPage = () => {
 
   const { data, isLoading, error } = useEvent(router.query.id);
   const updateEvent = useUpdateEvent();
-
   const isOwner = selfID?.id === data?.organizer;
-  if (!data) {
-    return <Box>loading...</Box>;
-  }
   return (
     <Layout>
       <EventDetails
-        event={data}
+        event={data || {}}
         isLoading={isLoading}
         isUpdating={updateEvent.isLoading}
         isOwner={isOwner}

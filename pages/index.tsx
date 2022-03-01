@@ -19,9 +19,9 @@ const Home: NextPage = () => {
   function handleCreateEvent(event) {
     if (!event) return setNewEvent(null);
     createEvent.mutate(event, {
-      onSuccess: (res) => {
+      onSuccess: (id) => {
         setNewEvent(null);
-        console.log("Event created", res);
+        console.log("Event created", id);
       },
     });
   }

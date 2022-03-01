@@ -4,29 +4,72 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { Event } from "../schemas/event";
 
+let ceramicLit;
+async function createLit() {
+  if (ceramicLit) {
+    return ceramicLit;
+  }
+  const { Integration } = await import("lit-ceramic-sdk");
+  // TODO: get URL from instance
+  ceramicLit = new Integration("https://ceramic-clay.3boxlabs.com", "ethereum");
+  ceramicLit.startLitClient(window);
+  return ceramicLit;
+}
+
 export function useCreateEvent() {
   const core = useCore();
   const [{ selfID }]: any = useViewerConnection();
   const queryClient = useQueryClient();
   return useMutation(async (form) => {
-    console.log("Creating Tile for event", form);
-    console.log("prepared", await prepareEvent(form, selfID));
-    const eventDoc = await core.dataModel.createTile(
+    try {
+      console.log("Creating Tile for event", form);
       // @ts-ignore
-      "Event",
-      await prepareEvent(form, selfID)
-    );
+      form.accessControlConditions = [
+        {
+          contractAddress: "",
+          standardContractType: "",
+          chain: "ethereum",
+          method: "eth_getBalance",
+          parameters: [":userAddress", "latest"],
+          returnValueTest: {
+            comparator: ">=",
+            value: "10000000000000",
+          },
+        },
+      ];
 
-    console.log("Optimistically updating events");
-    const event = addDocId(eventDoc);
-    // queryClient.setQueryData(["events"], (data: Event[] = []) =>
-    //   data.concat(event)
-    // );
+      console.log("prepared", await prepareEvent(form, selfID));
+      const { accessControlConditions, ...event } = await prepareEvent(
+        form,
+        selfID
+      );
 
-    console.log("Updating index", event);
-    await addToCalendar(event.id, selfID);
+      let eventId;
+      if (accessControlConditions) {
+        eventId = await createLit()
+          .then((lit) =>
+            lit.encryptAndWrite(JSON.stringify(event), accessControlConditions)
+          )
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        eventId = await core.dataModel
+          // @ts-ignore
+          .createTile("Event", event)
+          .then((doc) => doc.id.toString());
+      }
 
-    return event;
+      await addToCalendar(eventId, selfID);
+
+      queryClient.setQueryData(["events"], (data: Event[] = []) =>
+        data.concat({ id: eventId, ...event })
+      );
+
+      return eventId;
+    } catch (error) {
+      console.log("Error creating event", error);
+    }
   });
 }
 
@@ -63,6 +106,8 @@ export function useUpdateEvent() {
   const { ceramic } = useCore();
   return useMutation(async (event: Event) => {
     console.log("Update event", event);
+
+    // TODO: handle encrypted
     return TileDocument.load<Event>(ceramic, event.id).then(
       (doc) => doc && doc.update({ ...doc.content, ...event })
     );
@@ -139,9 +184,23 @@ async function removeFromCalendar(eventId, selfID) {
 }
 
 async function loadTile(ceramic, id) {
-  return TileDocument.load(ceramic, id).then(addDocId);
+  return TileDocument.load(ceramic, id)
+    .then(async (doc) => {
+      // Check if content encrypted
+      return doc.content.accessControlConditions
+        ? await createLit()
+            .then((lit) => lit.readAndDecrypt(id))
+            .catch((err) => {
+              console.log("LIT", err);
+              return null
+            })
+            .then(JSON.parse)
+        : doc;
+    })
+    .then((doc) => ({ ...doc, id }));
 }
 
 function addDocId(doc) {
+  console.log("addDocId", doc, doc.accessControlConditions);
   return { id: doc.id.toString(), ...doc.content };
 }

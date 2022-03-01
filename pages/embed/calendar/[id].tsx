@@ -94,6 +94,7 @@ const CalendarEmbed: NextPage = () => {
   //     return <Button>No event found</Button>;
   //   }
   const view = getView(router?.query?.view as string);
+  const date = router.query.date || format(new Date(), "yyyy-MM-dd");
   console.log(view, router.query.view);
   return router.isReady ? (
     <Box>
@@ -107,6 +108,7 @@ const CalendarEmbed: NextPage = () => {
           },
         ]}
         view={view}
+        date={date}
       />
     </Box>
   ) : (
