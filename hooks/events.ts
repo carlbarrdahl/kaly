@@ -23,26 +23,14 @@ export function useCreateEvent() {
   return useMutation(async (form) => {
     try {
       console.log("Creating Tile for event", form);
-      // @ts-ignore
-      form.accessControlConditions = [
-        {
-          contractAddress: "",
-          standardContractType: "",
-          chain: "ethereum",
-          method: "eth_getBalance",
-          parameters: [":userAddress", "latest"],
-          returnValueTest: {
-            comparator: ">=",
-            value: "10000000000000",
-          },
-        },
-      ];
 
       console.log("prepared", await prepareEvent(form, selfID));
       const { accessControlConditions, ...event } = await prepareEvent(
         form,
         selfID
       );
+
+      console.log(accessControlConditions, event);
 
       let eventId;
       if (accessControlConditions) {
@@ -136,7 +124,7 @@ export function useEvent(id) {
   );
 }
 
-async function prepareEvent(event, selfID) {
+async function prepareEvent({ acl, ...event }, selfID) {
   console.log("Preparing event...");
   return {
     ...event,
@@ -146,6 +134,25 @@ async function prepareEvent(event, selfID) {
     // ),
     start: event.start.toISOString(),
     end: event.end?.toISOString(),
+    accessControlConditions: acl
+      ? [
+          // (aclTypes[acl.standardContractType] || aclTypes.token)(acl),
+          {
+            contractAddress: acl.contractAddress || "",
+            standardContractType: acl.standardContractType || "",
+            chain: acl.standardContractType ? 1 : "ethereum",
+            method: acl.standardContractType ? "balanceOf" : "eth_getBalance",
+            parameters: [
+              ":userAddress",
+              ...(acl.standardContractType ? [] : ["latest"]),
+            ],
+            returnValueTest: {
+              comparator: ">",
+              value: String(acl.tokenAmount * 10 ** 18),
+            },
+          },
+        ]
+      : null,
   };
 }
 
@@ -192,15 +199,18 @@ async function loadTile(ceramic, id) {
             .then((lit) => lit.readAndDecrypt(id))
             .catch((err) => {
               console.log("LIT", err);
-              return null
+              return null;
             })
             .then(JSON.parse)
-        : doc;
+        : doc.content;
     })
-    .then((doc) => ({ ...doc, id }));
+    .then((doc) => {
+      console.log("DOC", doc);
+      return { ...doc, id };
+    });
 }
 
-function addDocId(doc) {
-  console.log("addDocId", doc, doc.accessControlConditions);
-  return { id: doc.id.toString(), ...doc.content };
-}
+// function addDocId(doc) {
+//   console.log("addDocId", doc, doc.accessControlConditions);
+//   return { id: doc.id.toString(), ...doc.content };
+// }

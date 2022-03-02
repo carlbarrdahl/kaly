@@ -6,26 +6,14 @@ import {
   Checkbox,
   FormLabel,
   FormControl,
+  FormHelperText,
+  Select,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 
-const accessControlConditions = [
-  {
-    contractAddress: "0x319ba3aab86e04a37053e984bd411b2c63bf229e",
-    standardContractType: "ERC721",
-    chain: 1,
-    method: "balanceOf",
-    parameters: [":userAddress"],
-    returnValueTest: {
-      comparator: ">",
-      value: "0",
-    },
-  },
-];
-
 const TokenGate: React.FC<{
-  onChange(rrule: string | undefined): void;
+  onChange(acl: any): void;
 }> = ({ onChange = () => {} }) => {
   const [isActive, toggleActive] = useState(false);
   const { register, watch, handleSubmit, getValues, setValue } = useForm({
@@ -33,20 +21,22 @@ const TokenGate: React.FC<{
     reValidateMode: "onChange",
     defaultValues: {
       contractAddress: "",
-      standardContractType: "ERC721",
+      tokenAmount: "",
+      standardContractType: "",
     },
   });
   const formData = watch();
   useEffect(() => {
     try {
-      // onChange(isActive ? rruleStr : undefined);
+      console.log(formData);
+      onChange(isActive ? formData : null);
     } catch (error) {
       console.log(error);
     }
   }, [formData, onChange]);
   return (
-    <Box>
-      <FormControl as={HStack} mb={2} justifyContent="space-between">
+    <form>
+      <FormControl as={HStack} justifyContent="space-between">
         <HStack>
           <FormLabel my={2} htmlFor="gate" width={16}>
             Private
@@ -60,14 +50,48 @@ const TokenGate: React.FC<{
           {isActive ? (
             <Box flex={1}>
               <HStack>
-                <Input disabled placeholder="Contract address" />
-                <Input disabled placeholder="Token amount" />
+                <Box>
+                  <Select
+                    size="sm"
+                    {...register("standardContractType")}
+                    onChange={(e) => {
+                      console.log("val", e.target.value);
+                      const { value } = e.target;
+                      setValue("standardContractType", value);
+                      if (!value) setValue("contractAddress", "");
+                    }}
+                  >
+                    <option value="">ETH</option>
+                    <option>ERC20</option>
+                    <option>ERC721</option>
+                    <option>ERC1155</option>
+                  </Select>
+                </Box>
+                <Box>
+                  <Input
+                    size="sm"
+                    disabled={!watch("standardContractType")}
+                    pattern="0x+[A-F,a-f,0-9]{40}"
+                    title="Must be a valid ERC20 contract address"
+                    {...register("contractAddress")}
+                    placeholder="Token address"
+                  />
+                </Box>
+                <Box>
+                  <Input
+                    size="sm"
+                    type="number"
+                    step="0.001"
+                    {...register("tokenAmount")}
+                    placeholder="Min required tokens"
+                  />
+                </Box>
               </HStack>
             </Box>
           ) : null}
         </HStack>
       </FormControl>
-    </Box>
+    </form>
   );
 };
 

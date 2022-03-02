@@ -85,7 +85,7 @@ const RecurrencySetting: React.FC<{
           />
           {isActive ? (
             <>
-              <Select {...register("freq")} width={28}>
+              <Select {...register("freq")} width={28} size="sm">
                 <option value={RRule.DAILY}>daily</option>
                 <option value={RRule.WEEKLY}>weekly</option>
                 <option value={RRule.MONTHLY}>monthly</option>
@@ -94,6 +94,7 @@ const RecurrencySetting: React.FC<{
               <Text>every</Text>
               {/* @ts-ignore */}
               <NumberInput
+                size="sm"
                 id="interval"
                 {...register("interval", { valueAsNumber: true })}
                 width={20}
@@ -119,6 +120,7 @@ const RecurrencySetting: React.FC<{
             Ends
           </FormLabel>
           <Select
+            size="sm"
             pl={2}
             {...register("ends", { valueAsNumber: true })}
             width={28}
@@ -137,6 +139,7 @@ const RecurrencySetting: React.FC<{
           ) : watch("ends") === 2 ? (
             <InputGroup width={48} as={HStack}>
               <NumberInput
+                size="sm"
                 // @ts-ignore
                 min={0}
                 {...register("count", { valueAsNumber: true })}

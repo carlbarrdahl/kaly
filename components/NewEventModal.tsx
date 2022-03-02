@@ -89,7 +89,7 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
     reset,
     watch,
     formState: { errors },
-  } = useForm<Event & { allDay: boolean }>({
+  } = useForm<Event & { allDay: boolean; acl: any }>({
     mode: "onBlur",
     reValidateMode: "onChange",
     defaultValues: {
@@ -101,11 +101,12 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
       attendees: [],
       rrule: "",
       allDay: event.allDay,
+      acl: {},
     },
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={() => onClose()} size="xl">
+    <Modal isOpen={isOpen} onClose={() => onClose()} size="2xl">
       <ModalContent shadow="dark-lg">
         <form
           onSubmit={handleSubmit(({ allDay, ...form }) => {
@@ -148,7 +149,17 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel mb={0}>End</FormLabel>
+                <FormLabel mb={0}>
+                  <Flex justifyContent={"space-between"}>
+                    End
+                    <HStack>
+                      <FormLabel my={0} w={16} htmlFor="allDay">
+                        All day
+                      </FormLabel>
+                      <Checkbox id="allDay" {...register("allDay")} />
+                    </HStack>
+                  </Flex>
+                </FormLabel>
                 <Input
                   pr={0}
                   size="sm"
@@ -168,22 +179,11 @@ const NewEventModal = ({ event, isLoading, isOpen, onClose }) => {
               </FormControl>
             </HStack>
 
-            <FormControl mt={2} as={HStack}>
-              <FormLabel my={0} w={16} htmlFor="allDay">
-                All day
-              </FormLabel>
-              <Checkbox id="allDay" {...register("allDay")} />
-            </FormControl>
-            <TokenGate
-              // start={watch("start")}
-              onChange={console.log}
+            <TokenGate onChange={(acl) => setValue("acl", acl)} />
+            <RecurrencySetting
+              start={watch("start")}
+              onChange={(rrule) => setValue("rrule", rrule)}
             />
-            <Box mt={0}>
-              <RecurrencySetting
-                start={watch("start")}
-                onChange={(rrule) => setValue("rrule", rrule)}
-              />
-            </Box>
             <Box mt={0}></Box>
             <FormControl mt={2}>
               <FormLabel mb={0} htmlFor="description">
