@@ -17,14 +17,14 @@ import {
   roundToNearestMinutes,
   set,
 } from "date-fns";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+
 import LayoutEmbed from "../../../components/LayoutEmbed";
 import { Controller, useForm } from "react-hook-form";
 import CalendarPopover from "../../../components/features/calendar/CalendarPopover";
 import { CreatableSelect } from "chakra-react-select";
 import { useCreateEvent } from "../../../hooks/events";
-import Link from "next/link";
-import { useEffect } from "react";
-
 const options = [
   {
     label: "15 minutes",
@@ -165,13 +165,10 @@ const CreateEventForm = ({ isCreating, onCreate }) => {
 
 const EventEmbed: NextPage = () => {
   const createEvent = useCreateEvent();
-
+  const router = useRouter();
   useEffect(() => {
-    createEvent.isSuccess &&
-      global.location.replace(
-        `${global.location?.origin}/embed/event/${createEvent.data}`
-      );
-  }, [createEvent]);
+    createEvent.isSuccess && router.push(`/embed/event/${createEvent.data}`);
+  }, [createEvent, router]);
 
   return (
     <LayoutEmbed {...createEvent}>
