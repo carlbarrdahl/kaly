@@ -1,4 +1,4 @@
-import { Button } from "@chakra-ui/react";
+import { Box, Flex, Spinner, Button } from "@chakra-ui/react";
 import { useViewerConnection } from "@self.id/react";
 import { useConnect } from "./features/auth/ConnectButton";
 
@@ -15,14 +15,30 @@ const ConnectButton = () => {
   );
 };
 
-const LayoutEmbed = ({ children }) => {
+const Center = (props) => (
+  <Flex p={8} justifyContent="center" alignItems="center" {...props} />
+);
+const LayoutEmbed = ({ children, isLoading, error }) => {
   const [{ selfID }]: any = useViewerConnection();
 
-  if (!selfID) {
-    return <ConnectButton />;
-  }
-
-  return children;
+  console.log(error);
+  return (
+    <Box maxW="xs">
+      {error ? (
+        <Center>{error.message}</Center>
+      ) : isLoading ? (
+        <Center>
+          <Spinner />
+        </Center>
+      ) : !selfID ? (
+        <Center>
+          <ConnectButton />
+        </Center>
+      ) : (
+        children
+      )}
+    </Box>
+  );
 };
 
 export default LayoutEmbed;

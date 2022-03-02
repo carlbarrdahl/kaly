@@ -23,6 +23,7 @@ import CalendarPopover from "../../../components/features/calendar/CalendarPopov
 import { CreatableSelect } from "chakra-react-select";
 import { useCreateEvent } from "../../../hooks/events";
 import Link from "next/link";
+import { useEffect } from "react";
 
 const options = [
   {
@@ -165,26 +166,19 @@ const CreateEventForm = ({ isCreating, onCreate }) => {
 const EventEmbed: NextPage = () => {
   const createEvent = useCreateEvent();
 
+  useEffect(() => {
+    createEvent.isSuccess &&
+      global.location.replace(
+        `${global.location?.origin}/embed/event/${createEvent.data}`
+      );
+  }, [createEvent]);
+
   return (
-    <LayoutEmbed>
-      <Box maxW={"xs"}>
-        {createEvent.isSuccess ? (
-          <Box>
-            <a
-              target="_blank"
-              href={`${global.location?.origin}/event/${createEvent.data?.id}`}
-              rel="noreferrer"
-            >
-              <Button>Open event</Button>
-            </a>
-          </Box>
-        ) : (
-          <CreateEventForm
-            isCreating={createEvent.isLoading}
-            onCreate={createEvent.mutate}
-          />
-        )}
-      </Box>
+    <LayoutEmbed {...createEvent}>
+      <CreateEventForm
+        isCreating={createEvent.isLoading}
+        onCreate={createEvent.mutate}
+      />
     </LayoutEmbed>
   );
 };
