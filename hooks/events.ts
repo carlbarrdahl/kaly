@@ -24,8 +24,9 @@ export function useCreateEvent() {
     try {
       console.log("Creating Tile for event", form);
 
-      console.log("prepared", await prepareEvent(form, selfID));
+      // console.log("prepared", await prepareEvent(form, selfID));
       const { accessControlConditions, ...event } = await prepareEvent(
+        // @ts-ignore
         form,
         selfID
       );
@@ -51,6 +52,7 @@ export function useCreateEvent() {
       await addToCalendar(eventId, selfID);
 
       queryClient.setQueryData(["events"], (data: Event[] = []) =>
+        // @ts-ignore
         data.concat({ id: eventId, ...event })
       );
 
@@ -136,7 +138,6 @@ async function prepareEvent({ acl, ...event }, selfID) {
     end: event.end?.toISOString(),
     accessControlConditions: acl
       ? [
-          // (aclTypes[acl.standardContractType] || aclTypes.token)(acl),
           {
             contractAddress: acl.contractAddress || "",
             standardContractType: acl.standardContractType || "",
@@ -194,7 +195,8 @@ async function loadTile(ceramic, id) {
   return TileDocument.load(ceramic, id)
     .then(async (doc) => {
       // Check if content encrypted
-      return doc.content.accessControlConditions
+      // @ts-ignore
+      return doc.content?.accessControlConditions
         ? await createLit()
             .then((lit) => lit.readAndDecrypt(id))
             .catch((err) => {
@@ -204,10 +206,7 @@ async function loadTile(ceramic, id) {
             .then(JSON.parse)
         : doc.content;
     })
-    .then((doc) => {
-      console.log("DOC", doc);
-      return { ...doc, id };
-    });
+    .then((doc) => ({ ...doc, id }));
 }
 
 // function addDocId(doc) {
